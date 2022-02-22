@@ -1,2 +1,0 @@
-sc.exe create "Fabio" binPath= "C:\Consul-Vault-Fabio\fabio.exe" start= auto
-sc.exe create "Consul" binPath= "C:\Consul-Vault-Fabio\consul.exe agent -dev" start= auto

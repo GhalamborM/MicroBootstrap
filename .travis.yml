@@ -3,18 +3,15 @@ mono: none
 sudo: required
 dist: xenial
 os: linux
-dotnet: 3.1
+dotnet: 6.0
 branches:
   only:
-    - master
+    - main
     - develop
 before_script:
   - chmod -R a+x scripts
 script:
   - ./scripts/dotnet-build-micro-bootstrap.sh
-  - ./scripts/dotnet-build-event-processcor-service.sh
-  - ./scripts/dotnet-build-messaging-service.sh
-  - ./scripts/dotnet-build-api-gateway.sh
 
 notifications:
   email:

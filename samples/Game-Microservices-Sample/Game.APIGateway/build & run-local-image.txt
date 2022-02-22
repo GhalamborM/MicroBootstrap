@@ -1,7 +1,0 @@
-docker build --tag api:local -f ./Dockerfile.multistage .
-docker run --network=game-network -p 7000:7000 --name=api api:local 
----------------------------------------------------
-dotnet publish src/Game.API -c Release -o src/Game.API/bin/Docker
-docker build --tag api:local -f ./Dockerfile .
-docker run --network=game-network -p 7000:7000 --name=api api:local 
---------------------------------------------------

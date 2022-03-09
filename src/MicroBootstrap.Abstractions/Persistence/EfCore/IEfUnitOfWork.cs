@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace MicroBootstrap.Abstractions.Persistence.EfCore;
 
 public interface IEfUnitOfWork : IUnitOfWork, ITransactionAble, ITxDbContextExecution, IRetryDbContextExecution

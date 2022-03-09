@@ -8,7 +8,7 @@ public interface IUnitOfWork : IDisposable
     Task CommitAsync(CancellationToken cancellationToken = default);
 }
 
-public interface IUnitOfWork<TContext> : IDisposable
+public interface IUnitOfWork<out TContext> : IDisposable
     where TContext : class
 {
     TContext Context { get; }

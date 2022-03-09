@@ -1,3 +1,8 @@
+using Avro.Specific;
+using Confluent.Kafka;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
+
 namespace MicroBootstrap.Messaging.Transport.Kafka.SchemaRegistry;
 
 public static class SchemaRegistryPreCache

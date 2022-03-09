@@ -1,4 +1,8 @@
-﻿namespace MicroBootstrap.Scheduling.Hangfire.Scheduler;
+﻿using Hangfire;
+using MicroBootstrap.Abstractions.CQRS.Command;
+using MicroBootstrap.Abstractions.Scheduler;
+
+namespace MicroBootstrap.Scheduling.Hangfire.Scheduler;
 
 public interface IHangfireScheduler : IScheduler
 {

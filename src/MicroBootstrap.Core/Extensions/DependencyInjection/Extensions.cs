@@ -1,8 +1,17 @@
 using System.Reflection;
-using MicroBootstrap.Core.Events;
-using MicroBootstrap.Core.Events.Store;
+using MicroBootstrap.Abstractions.Core;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
+using MicroBootstrap.Abstractions.Types;
+using MicroBootstrap.Core.Domain.Events;
+using MicroBootstrap.Core.Domain.Events.Store;
+using MicroBootstrap.Core.Extensions.Registration;
 using MicroBootstrap.Core.IdsGenerator;
-using MicroBootstrap.Core.Objects;
+using MicroBootstrap.Core.Types;
+using Microsoft.Extensions.Configuration;
 
 namespace MicroBootstrap.Core.Extensions.DependencyInjection;
 
@@ -24,7 +33,7 @@ public static class Extensions
         services.AddScoped<IDomainNotificationEventPublisher, DomainNotificationEventPublisher>();
         services.AddScoped<IAggregatesDomainEventsStore, AggregatesDomainEventsStore>();
 
-        switch (configuration.GetValue<string>("IdGenerator:Type"))
+        switch (configuration["IdGenerator:Type"])
         {
             case "Guid":
                 services.AddSingleton<IIdGenerator<Guid>, GuidIdGenerator>();
@@ -48,11 +57,23 @@ public static class Extensions
             .Add<IEventStore>(sp => sp.GetRequiredService<TEventStore>(), withLifetime);
     }
 
-    public static IServiceCollection AddEventStorePipeline(
-        this IServiceCollection services,
-        ServiceLifetime withLifetime = ServiceLifetime.Transient)
+    public static IServiceCollection AddReadProjections(this IServiceCollection services, params Assembly[] assemblies)
     {
-        return services.Add(typeof(INotificationHandler<>), typeof(EventStorePipeline<>), withLifetime);
+        services.AddSingleton<IReadProjectionPublisher, ReadProjectionPublisher>();
+        var assembliesToScan = assemblies.Any() ? assemblies : new[] { Assembly.GetEntryAssembly() };
+
+        RegisterProjections(services, assembliesToScan!);
+
+        return services;
+    }
+
+    private static void RegisterProjections(IServiceCollection services, Assembly[] assembliesToScan)
+    {
+        services.Scan(scan => scan
+            .FromAssemblies(assembliesToScan)
+            .AddClasses(classes => classes.AssignableTo<IReadProjection>()) // Filter classes
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
     }
 
     private static void RegisterEventMappers(IServiceCollection services, params Assembly[]? assembliesToScan)

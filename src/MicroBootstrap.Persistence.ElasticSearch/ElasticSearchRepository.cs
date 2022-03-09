@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Ardalis.GuardClauses;
-using MicroBootstrap.MicroBootstrap.Abstractions.Domain.Model;
-using MicroBootstrap.MicroBootstrap.Abstractions.Persistence;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Persistence;
 using Nest;
 
 namespace MicroBootstrap.MicroBootstrap.Persistence.ElasticSearch;

@@ -1,3 +1,5 @@
+using MongoDB.Driver;
+
 namespace MicroBootstrap.Abstractions.Persistence.Mongo;
 
 public interface IMongoDbContext : IDisposable

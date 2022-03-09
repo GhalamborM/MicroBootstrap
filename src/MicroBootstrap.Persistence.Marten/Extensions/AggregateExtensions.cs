@@ -1,3 +1,7 @@
+using Marten;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+
 namespace MicroBootstrap.Persistence.Marten.Extensions;
 
 public static class AggregateExtensions

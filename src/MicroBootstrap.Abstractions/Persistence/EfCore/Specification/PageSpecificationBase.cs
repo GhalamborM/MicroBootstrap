@@ -1,8 +1,7 @@
 using System.Linq.Expressions;
+using MicroBootstrap.Abstractions.CQRS;
 
 namespace MicroBootstrap.Abstractions.Persistence.EfCore.Specification;
-
-public record FilterModel(string FieldName, string Comparision, string FieldValue);
 
 public abstract class PageSpecificationBase<T> : IPageSpecification<T>
 {

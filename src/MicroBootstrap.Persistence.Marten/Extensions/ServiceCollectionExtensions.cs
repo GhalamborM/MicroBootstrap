@@ -1,3 +1,13 @@
+using Marten;
+using Marten.Services;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Core.Extensions.Configuration;
+using MicroBootstrap.Core.Extensions.DependencyInjection;
+using MicroBootstrap.Core.Extensions.Registration;
+using MicroBootstrap.Core.Threading;
+using Microsoft.Extensions.Configuration;
+using Weasel.Core;
+
 namespace MicroBootstrap.Persistence.Marten.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -15,7 +25,7 @@ public static class ServiceCollectionExtensions
         services.Add(
             sp =>
             {
-                var store = ServiceProviderServiceExtensions.GetRequiredService<DocumentStore>(sp);
+                var store = sp.GetRequiredService<DocumentStore>();
                 return CreateDocumentSession(store);
             },
             serviceLifetime);
@@ -92,6 +102,7 @@ public static class ServiceCollectionExtensions
 
         configureOptions?.Invoke(options);
     }
+
 
     public static DocumentStore CreateDocumentStore(
         string connectionString,

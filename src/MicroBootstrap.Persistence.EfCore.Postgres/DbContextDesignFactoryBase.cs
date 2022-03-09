@@ -1,3 +1,8 @@
+using MicroBootstrap.Core.Persistence.EfCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+
 namespace MicroBootstrap.Persistence.EfCore.Postgres;
 
 public abstract class DbContextDesignFactoryBase<TDbContext> : IDesignTimeDbContextFactory<TDbContext>

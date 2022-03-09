@@ -1,6 +1,9 @@
+using Ardalis.GuardClauses;
+using IdGen;
+
 namespace MicroBootstrap.Core.IdsGenerator;
 
-public class SnowFlakIdGenerator : IIdGenerator<long>
+public class SnowFlakIdGenerator : Abstractions.Core.IIdGenerator<long>
 {
     public long New()
     {

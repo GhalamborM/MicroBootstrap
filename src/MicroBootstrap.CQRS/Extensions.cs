@@ -1,21 +1,15 @@
 using System.Reflection;
+using MediatR;
+using MicroBootstrap.Abstractions.CQRS.Command;
+using MicroBootstrap.Abstractions.CQRS.Query;
 using MicroBootstrap.CQRS.Command;
 using MicroBootstrap.CQRS.Query;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MicroBootstrap.CQRS;
 
 public static class Extensions
 {
-    public static WebApplicationBuilder AddCqrs(
-        this WebApplicationBuilder builder,
-        Assembly[]? assemblies = null,
-        Action<IServiceCollection>? doMoreActions = null)
-    {
-        AddCqrs(builder.Services, assemblies, doMoreActions);
-
-        return builder;
-    }
-
     public static IServiceCollection AddCqrs(
         this IServiceCollection services,
         Assembly[]? assemblies = null,

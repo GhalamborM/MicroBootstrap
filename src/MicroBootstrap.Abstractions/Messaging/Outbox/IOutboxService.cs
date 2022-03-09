@@ -1,5 +1,5 @@
-using MicroBootstrap.Abstractions.Domain.Events.External;
-using MicroBootstrap.Abstractions.Domain.Events.Internal;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 
 namespace MicroBootstrap.Abstractions.Messaging.Outbox;
 

@@ -1,3 +1,5 @@
+using MicroBootstrap.Abstractions.Core;
+
 namespace MicroBootstrap.Core.IdsGenerator;
 
 public class GuidIdGenerator : IIdGenerator<Guid>

@@ -6,4 +6,19 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MicroBootstrap.Abstractions\MicroBootstrap.Abstractions.csproj"/>
+    <ProjectReference Include="..\MicroBootstrap.Core\MicroBootstrap.Core.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit"/>
+    <PackageReference Include="MassTransit.AspNetCore"/>
+    <PackageReference Include="MassTransit.EntityFrameworkCore"/>
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection"/>
+    <PackageReference Include="MassTransit.Kafka"/>
+    <PackageReference Include="MassTransit.MongoDb"/>
+    <PackageReference Include="MassTransit.RabbitMQ"/>
+  </ItemGroup>
+
 </Project>

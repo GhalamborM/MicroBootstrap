@@ -1,4 +1,10 @@
+using System.Collections.Immutable;
 using System.Linq.Expressions;
+using Ardalis.GuardClauses;
+using Marten;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Persistence;
 
 namespace MicroBootstrap.Persistence.Marten.Repositories;
 
@@ -121,15 +127,10 @@ public class MartenDocumentRepository<TEntity, TKey> : IRepository<TEntity, TKey
         Guard.Against.Null(id, nameof(id));
 
         var entity = await FindByIdAsync(id, cancellationToken);
-
-        await DeleteAsync(entity, cancellationToken);
-        Guard.Against.NotFound(nameof(entity.Id), id, nameof(entity.Id));
-
-        _aggregatesDomainEventsStore.AddEventsFrom(entity);
     }
 
     public void Dispose()
     {
-
+        _documentSession.Dispose();
     }
 }

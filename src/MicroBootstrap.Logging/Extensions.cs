@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Configuration;
+using Serilog.Enrichers.Span;
+using Serilog.Events;
+using Serilog.Filters;
+using Serilog.Sinks.SpectreConsole;
+
 namespace MicroBootstrap.Logging;
 
 public static class HostBuilderExtensions
 {
-    public static WebApplicationBuilder AddCustomSerilog(
-        this WebApplicationBuilder builder,
-        Action<LoggerConfiguration>? extraConfigure = null)
-    {
-        AddCustomSerilog(builder.Host, extraConfigure);
-
-        return builder;
-    }
-
     public static IHostBuilder AddCustomSerilog(
         this IHostBuilder builder,
         Action<LoggerConfiguration>? extraConfigure = null)

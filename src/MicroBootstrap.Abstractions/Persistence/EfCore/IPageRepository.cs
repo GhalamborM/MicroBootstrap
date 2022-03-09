@@ -1,4 +1,4 @@
-using MicroBootstrap.Abstractions.Domain.Model;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
 using MicroBootstrap.Abstractions.Persistence.EfCore.Specification;
 
 namespace MicroBootstrap.Abstractions.Persistence.EfCore;

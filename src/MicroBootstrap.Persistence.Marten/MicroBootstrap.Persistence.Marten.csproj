@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MicroBootstrap.Abstractions\MicroBootstrap.Abstractions.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Core\MicroBootstrap.Core.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Persistence.EfCore.Postgres\MicroBootstrap.Persistence.EfCore.Postgres.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Marten" Version="4.3.1" />
+    <PackageReference Include="Weasel.Postgresql" Version="5.2.0" />
+  </ItemGroup>
+
 </Project>

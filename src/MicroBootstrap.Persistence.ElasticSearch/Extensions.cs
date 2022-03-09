@@ -1,6 +1,5 @@
-using MicroBootstrap.MicroBootstrap.Web.Extensions;
+using MicroBootstrap.Core.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Nest;
 
 namespace MicroBootstrap.MicroBootstrap.Persistence.ElasticSearch;

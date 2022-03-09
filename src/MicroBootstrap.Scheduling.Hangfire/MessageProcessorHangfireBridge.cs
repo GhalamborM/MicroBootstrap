@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using MediatR;
+using MicroBootstrap.Abstractions.Messaging;
 
 namespace MicroBootstrap.Scheduling.Hangfire;
 

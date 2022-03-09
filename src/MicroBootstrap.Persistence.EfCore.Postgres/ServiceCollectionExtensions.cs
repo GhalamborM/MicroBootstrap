@@ -1,4 +1,18 @@
 using System.Reflection;
+using Ardalis.GuardClauses;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Persistence;
+using MicroBootstrap.Abstractions.Persistence.EfCore;
+using MicroBootstrap.Core.Persistence.EfCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 
 namespace MicroBootstrap.Persistence.EfCore.Postgres;
 
@@ -107,7 +121,7 @@ public static class ServiceCollectionExtensions
         var scope = app.ApplicationServices.CreateAsyncScope();
         var dbFacadeResolver = scope.ServiceProvider.GetService<IDbFacadeResolver>();
 
-        var policy = CreatePolicy(3, logger, nameof(WebApplication));
+        var policy = CreatePolicy(3, logger, "postgres");
         await policy.ExecuteAsync(async () =>
         {
             if (!await dbFacadeResolver?.Database.CanConnectAsync(cancellationToken)!)

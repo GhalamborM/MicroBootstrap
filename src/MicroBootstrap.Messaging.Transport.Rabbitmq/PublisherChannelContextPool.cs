@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using RabbitMQ.Client;
 
 namespace MicroBootstrap.Messaging.Transport.Rabbitmq;
 

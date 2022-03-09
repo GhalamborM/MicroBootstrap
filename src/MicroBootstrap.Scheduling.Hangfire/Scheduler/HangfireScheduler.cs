@@ -1,4 +1,12 @@
-﻿namespace MicroBootstrap.Scheduling.Hangfire.Scheduler
+﻿using Hangfire;
+using MediatR;
+using MicroBootstrap.Abstractions.CQRS.Command;
+using MicroBootstrap.Abstractions.Messaging;
+using MicroBootstrap.Abstractions.Scheduler;
+using MicroBootstrap.Core.Extensions.Mediator;
+using Newtonsoft.Json;
+
+namespace MicroBootstrap.Scheduling.Hangfire.Scheduler
 {
     public class HangfireScheduler : IHangfireScheduler
     {

@@ -1,5 +1,10 @@
 using System.Linq.Expressions;
-using FilterModel = MicroBootstrap.MicroBootstrap.Abstractions.CQRS.FilterModel;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using MicroBootstrap.Abstractions.CQRS;
+using MicroBootstrap.Abstractions.Persistence.EfCore.Specification;
+using MicroBootstrap.Core.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace MicroBootstrap.Core.Persistence.EfCore;
 

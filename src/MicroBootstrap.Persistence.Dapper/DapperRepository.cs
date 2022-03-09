@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Dapper;
 
 namespace MicroBootstrap.Persistence.Dapper;
 

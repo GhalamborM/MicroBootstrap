@@ -2,14 +2,14 @@ namespace MicroBootstrap.Email.Options;
 
 public class EmailOptions
 {
-    public MimeKitOptions? MimeKitOptions { get; set; }
+    public MailKitOptions? MimeKitOptions { get; set; }
     public SendGridOptions? SendGridOptions { get; set; }
     public string? From { get; set; }
     public string? DisplayName { get; set; }
     public bool Enable { get; set; }
 }
 
-public class MimeKitOptions
+public class MailKitOptions
 {
     public string? Host { get; set; }
     public int Port { get; set; }

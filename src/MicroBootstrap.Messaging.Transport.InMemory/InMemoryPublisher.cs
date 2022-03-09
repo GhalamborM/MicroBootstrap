@@ -1,5 +1,8 @@
-﻿using MicroBootstrap.Messaging.Transport.InMemory.Channels;
+﻿using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Abstractions.Messaging.Transport;
+using MicroBootstrap.Messaging.Transport.InMemory.Channels;
 using MicroBootstrap.Messaging.Transport.InMemory.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace MicroBootstrap.Messaging.Transport.InMemory;
 

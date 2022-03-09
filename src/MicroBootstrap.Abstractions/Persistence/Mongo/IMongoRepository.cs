@@ -1,4 +1,4 @@
-using MicroBootstrap.Abstractions.Domain.Model;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
 
 namespace MicroBootstrap.Abstractions.Persistence.Mongo;
 

@@ -2,6 +2,11 @@
 using MicroBootstrap.Tracing.Domain;
 using MicroBootstrap.Tracing.Mediator;
 using MicroBootstrap.Tracing.Transports;
+using Microsoft.Extensions.Configuration;
+using OpenTelemetry;
+using OpenTelemetry.Context.Propagation;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace MicroBootstrap.Tracing
 {

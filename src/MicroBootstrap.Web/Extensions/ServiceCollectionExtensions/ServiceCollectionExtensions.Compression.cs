@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace MicroBootstrap.Web.Extensions.ServiceCollectionExtensions;
 

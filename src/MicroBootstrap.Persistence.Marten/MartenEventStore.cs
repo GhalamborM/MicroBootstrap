@@ -1,3 +1,8 @@
+using System.Collections.Immutable;
+using Marten;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+
 namespace MicroBootstrap.Persistence.Marten;
 
 public class MartenEventStore : IEventStore
@@ -13,7 +18,7 @@ public class MartenEventStore : IEventStore
         Guid streamId,
         int? version,
         CancellationToken cancellationToken = default,
-        params IEvent[] events)
+        params IDomainEvent[] events)
     {
         if (version.HasValue)
             _documentSession.Events.Append(streamId, version, events.Cast<object>().ToArray());
@@ -22,7 +27,7 @@ public class MartenEventStore : IEventStore
         return Task.CompletedTask;
     }
 
-    public Task Append(Guid streamId, CancellationToken cancellationToken, params IEvent[] events)
+    public Task Append(Guid streamId, CancellationToken cancellationToken, params IDomainEvent[] events)
     {
         return Append(streamId, null, cancellationToken, events);
     }
@@ -41,7 +46,7 @@ public class MartenEventStore : IEventStore
             token: cancellationToken);
     }
 
-    public async Task<IReadOnlyList<IEvent>> Query(
+    public async Task<IReadOnlyList<IDomainEvent>> Query(
         Guid? streamId = null,
         CancellationToken cancellationToken = default,
         int? fromVersion = null,
@@ -52,7 +57,7 @@ public class MartenEventStore : IEventStore
 
         return events
             .Select(ev => ev.Data)
-            .OfType<IEvent>()
+            .OfType<IDomainEvent>()
             .ToList();
     }
 
@@ -61,7 +66,7 @@ public class MartenEventStore : IEventStore
         CancellationToken cancellationToken = default,
         int? fromVersion = null,
         DateTime? fromTimestamp = null)
-        where TEvent : class, IEvent
+        where TEvent : class, IDomainEvent
     {
         var events = await Filter(streamId, fromVersion, fromTimestamp)
             .ToListAsync(cancellationToken);

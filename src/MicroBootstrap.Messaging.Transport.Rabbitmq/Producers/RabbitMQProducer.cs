@@ -1,4 +1,9 @@
 using System.Text;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Abstractions.Messaging.Serialization;
+using MicroBootstrap.Abstractions.Messaging.Transport;
+using Microsoft.Extensions.Logging;
+using Polly;
 
 namespace MicroBootstrap.Messaging.Transport.Rabbitmq.Producers;
 

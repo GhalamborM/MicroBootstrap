@@ -1,3 +1,10 @@
+using Avro.Generic;
+using Avro.Specific;
+using Confluent.Kafka;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
+using Microsoft.Extensions.Configuration;
+
 namespace MicroBootstrap.Messaging.Transport.Kafka.SchemaRegistry;
 
 public static class Extensions

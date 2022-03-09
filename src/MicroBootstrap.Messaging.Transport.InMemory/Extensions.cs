@@ -1,5 +1,7 @@
-﻿using MicroBootstrap.Messaging.Transport.InMemory.Channels;
+﻿using MicroBootstrap.Abstractions.Messaging.Transport;
+using MicroBootstrap.Messaging.Transport.InMemory.Channels;
 using MicroBootstrap.Messaging.Transport.InMemory.Diagnostics;
+using Microsoft.Extensions.Configuration;
 
 namespace MicroBootstrap.Messaging.Transport.InMemory
 {

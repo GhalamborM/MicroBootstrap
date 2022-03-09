@@ -1,3 +1,5 @@
+using Ardalis.GuardClauses;
+
 namespace MicroBootstrap.Email;
 
 public interface IEmailSender

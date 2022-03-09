@@ -1,3 +1,5 @@
+using MicroBootstrap.Core.Caching;
+
 namespace MicroBootstrap.Caching.Redis;
 
 public class RedisCacheOptions : CacheOptions

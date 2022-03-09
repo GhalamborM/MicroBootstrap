@@ -1,15 +1,14 @@
 ﻿using MediatR;
-using MicroBootstrap.MicroBootstrap.Abstractions.Domain.Events;
-using MicroBootstrap.MicroBootstrap.Abstractions.Domain.Projections;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.MicroBootstrap.Persistence.ElasticSearch.Indices;
-using Microsoft.Extensions.DependencyInjection;
 using Nest;
 
 namespace MicroBootstrap.MicroBootstrap.Persistence.ElasticSearch;
 
 public class ElasticSearchProjection<TEvent, TView> : IEventHandler<TEvent>
     where TView : class, IHaveProjection
-    where TEvent : IEvent
+    where TEvent : IDomainEvent
 {
     private readonly IElasticClient _elasticClient;
     private readonly Func<TEvent, string> _getId;
@@ -46,7 +45,7 @@ public static class ElasticSearchProjectionConfig
         this IServiceCollection services,
         Func<TEvent, string> getId)
         where TView : class, IHaveProjection
-        where TEvent : IEvent
+        where TEvent : IDomainEvent
     {
         services.AddTransient<INotificationHandler<TEvent>>(sp =>
         {

@@ -1,3 +1,6 @@
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+
 namespace MicroBootstrap.Core.Persistence.EfCore;
 
 public class EfDomainEventAccessor : IDomainEventsAccessor

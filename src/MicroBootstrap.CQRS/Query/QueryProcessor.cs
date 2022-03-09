@@ -1,3 +1,6 @@
+using MediatR;
+using MicroBootstrap.Abstractions.CQRS.Query;
+
 namespace MicroBootstrap.CQRS.Query;
 
 public class QueryProcessor : IQueryProcessor

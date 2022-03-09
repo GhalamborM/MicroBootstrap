@@ -1,4 +1,11 @@
 using System.Reflection;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Abstractions.Messaging.Transport;
+using MicroBootstrap.Core.Extensions.Events;
+using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace MicroBootstrap.Messaging.Transport.Rabbitmq.Consumers;
 

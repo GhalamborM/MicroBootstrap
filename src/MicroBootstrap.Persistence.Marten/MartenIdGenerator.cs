@@ -1,6 +1,9 @@
+using Marten;
+using Marten.Schema.Identity;
+
 namespace MicroBootstrap.Persistence.Marten;
 
-public class MartenIdGenerator : IIdGenerator<Guid>
+public class MartenIdGenerator : Abstractions.Core.IIdGenerator<Guid>
 {
     private readonly IDocumentSession _documentSession;
 

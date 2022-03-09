@@ -1,5 +1,14 @@
+using System.Collections.Immutable;
 using System.Data;
 using System.Linq.Expressions;
+using Ardalis.GuardClauses;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Domain.Model;
+using MicroBootstrap.Abstractions.Persistence;
+using MicroBootstrap.Abstractions.Persistence.EfCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace MicroBootstrap.Core.Persistence.EfCore;
 
@@ -61,7 +70,7 @@ public abstract class EfDbContextBase :
         IsolationLevel isolationLevel,
         CancellationToken cancellationToken = default)
     {
-        _currentTransaction ??= await Database.BeginTransactionAsync(isolationLevel, cancellationToken);
+        _currentTransaction ??= await Database.BeginTransactionAsync(cancellationToken);
     }
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
@@ -208,7 +217,7 @@ public abstract class EfDbContextBase :
         return strategy.ExecuteAsync(async () =>
         {
             await using var transaction = await Database
-                .BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+                .BeginTransactionAsync(cancellationToken);
             try
             {
                 await action();
@@ -229,7 +238,7 @@ public abstract class EfDbContextBase :
         return strategy.ExecuteAsync(async () =>
         {
             await using var transaction = await Database
-                .BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+                .BeginTransactionAsync(cancellationToken);
             try
             {
                 var result = await action();

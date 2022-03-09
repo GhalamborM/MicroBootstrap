@@ -1,3 +1,8 @@
+using Avro.Specific;
+using Confluent.Kafka;
+using Confluent.SchemaRegistry;
+using Microsoft.Extensions.Configuration;
+
 namespace MicroBootstrap.Messaging.Transport.Kafka.Consumers;
 
 public class KafkaConsumerConfig : ConsumerConfig

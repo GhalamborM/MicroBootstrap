@@ -1,3 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+using Microsoft.EntityFrameworkCore;
+
 namespace MicroBootstrap.Core.Persistence.EfCore;
 
 public class EfRepository<TDbContext, TEntity, TKey> : EfRepositoryBase<TDbContext, TEntity, TKey>

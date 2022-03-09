@@ -1,3 +1,5 @@
+using Marten.Events.Daemon.Resiliency;
+
 namespace MicroBootstrap.Persistence.Marten;
 
 public class MartenOptions

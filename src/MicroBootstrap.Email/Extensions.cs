@@ -1,20 +1,11 @@
+using MicroBootstrap.Core.Extensions.Configuration;
 using MicroBootstrap.Email.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace MicroBootstrap.Email;
 
 public static class Extensions
 {
-    public static WebApplicationBuilder AddEmailService(
-        this WebApplicationBuilder builder,
-        IConfiguration configuration,
-        EmailProvider provider = EmailProvider.MimKit,
-        Action<EmailOptions>? configure = null)
-    {
-        AddEmailService(builder.Services, configuration, provider, configure);
-
-        return builder;
-    }
-
     public static IServiceCollection AddEmailService(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -29,7 +20,7 @@ public static class Extensions
         }
         else
         {
-            services.AddSingleton<IEmailSender, MimeKitEmailSender>();
+            services.AddSingleton<IEmailSender, MailKitEmailSender>();
         }
 
         if (configureOptions is { })

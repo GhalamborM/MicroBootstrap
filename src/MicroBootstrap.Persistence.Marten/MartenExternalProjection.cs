@@ -1,8 +1,13 @@
-﻿namespace MicroBootstrap.Persistence.Marten;
+﻿using Marten;
+using MediatR;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+
+namespace MicroBootstrap.Persistence.Marten;
 
 public class MartenExternalProjection<TEvent, TView> : IEventHandler<TEvent>
     where TView : IHaveProjection
-    where TEvent : IEvent
+    where TEvent : IDomainEvent
 {
     private readonly IDocumentSession session;
     private readonly Func<TEvent, Guid> getId;
@@ -33,7 +38,7 @@ public static class MartenExternalProjectionConfig
 {
     public static IServiceCollection Project<TEvent, TView>(this IServiceCollection services, Func<TEvent, Guid> getId)
         where TView : IHaveProjection
-        where TEvent : IEvent
+        where TEvent : IDomainEvent
     {
         services.AddTransient<INotificationHandler<TEvent>>(sp =>
         {

@@ -1,4 +1,10 @@
-﻿using System.Diagnostics;
+﻿
+
+using System.Diagnostics;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using OpenTelemetry.Trace;
 
 namespace MicroBootstrap.Tracing.Mediator;
 

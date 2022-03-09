@@ -1,3 +1,7 @@
+using Microsoft.Extensions.Logging;
+using Polly;
+using RabbitMQ.Client;
+
 namespace MicroBootstrap.Messaging.Transport.Rabbitmq;
 
 public sealed class RabbitPersistentConnection : IDisposable, IBusConnection

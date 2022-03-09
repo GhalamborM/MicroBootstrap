@@ -1,4 +1,12 @@
 ﻿using System.Diagnostics;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Tracing;
+using MicroBootstrap.Tracing.Messaging.Events;
+using MicroBootstrap.Tracing.Transports;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using OpenTelemetry;
+using OpenTelemetry.Context.Propagation;
 
 namespace MicroBootstrap.Messaging.Transport.InMemory.Diagnostics;
 

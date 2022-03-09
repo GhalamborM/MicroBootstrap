@@ -1,3 +1,6 @@
+using Confluent.Kafka;
+using Microsoft.Extensions.Configuration;
+
 namespace MicroBootstrap.Messaging.Transport.Kafka.Producers;
 
 public class KafkaProducerConfig

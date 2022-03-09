@@ -1,3 +1,15 @@
+using Ardalis.GuardClauses;
+using Avro.Generic;
+using Confluent.Kafka;
+using Confluent.Kafka.SyncOverAsync;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Messaging.Transport;
+using MicroBootstrap.Messaging.Transport.Kafka.SchemaRegistry;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
 namespace MicroBootstrap.Messaging.Transport.Kafka.Consumers;
 
 public class KafkaConsumer : IEventBusSubscriber

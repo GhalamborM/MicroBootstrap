@@ -1,4 +1,5 @@
 using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MicroBootstrap.Abstractions.Persistence.EfCore;
 

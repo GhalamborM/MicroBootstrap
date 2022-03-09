@@ -1,4 +1,6 @@
-﻿namespace MicroBootstrap.Core.Dependency;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace MicroBootstrap.Core.Dependency;
 
 /// <summary>
 /// Add static service resolver to use when dependencies injection is not available

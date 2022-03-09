@@ -1,5 +1,16 @@
 using System.Reflection;
+using GreenPipes;
+using Humanizer;
+using MassTransit;
+using MassTransit.Definition;
+using MassTransit.RabbitMqTransport;
+using MassTransit.RabbitMqTransport.Topology;
+using MassTransit.Topology;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Core.Extensions.Configuration;
 using MicroBootstrap.Messaging.MassTransit.RabbitMQ.Options;
+using Microsoft.Extensions.Configuration;
+using RabbitMQ.Client;
 
 namespace MicroBootstrap.Messaging.MassTransit.RabbitMQ;
 

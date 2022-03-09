@@ -1,4 +1,6 @@
-﻿namespace MicroBootstrap.Tracing
+﻿using OpenTelemetry.Exporter;
+
+namespace MicroBootstrap.Tracing
 {
     public class OpenTelemetryOptions
     {

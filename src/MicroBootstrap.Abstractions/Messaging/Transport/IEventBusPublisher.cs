@@ -1,4 +1,4 @@
-using MicroBootstrap.Abstractions.Domain.Events.External;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
 
 namespace MicroBootstrap.Abstractions.Messaging.Transport;
 

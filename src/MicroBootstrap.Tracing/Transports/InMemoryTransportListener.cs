@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using MicroBootstrap.Tracing.Messaging.Events;
+using Microsoft.Extensions.DiagnosticAdapter;
 
 namespace MicroBootstrap.Tracing.Transports
 {

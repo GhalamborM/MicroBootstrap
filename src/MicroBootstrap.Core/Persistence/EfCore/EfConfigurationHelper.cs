@@ -1,8 +1,10 @@
+using Microsoft.Extensions.Configuration;
+
 namespace MicroBootstrap.Core.Persistence.EfCore;
 
 public static class EfConfigurationHelper
 {
-    public static IConfiguration GetConfiguration(string basePath = null)
+    public static IConfiguration GetConfiguration(string? basePath = null)
     {
         var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 

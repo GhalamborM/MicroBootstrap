@@ -1,5 +1,8 @@
+using MicroBootstrap.Abstractions.Messaging.Transport;
 using MicroBootstrap.Messaging.Transport.Rabbitmq.Consumers;
 using MicroBootstrap.Messaging.Transport.Rabbitmq.Producers;
+using Microsoft.Extensions.Configuration;
+using RabbitMQ.Client;
 
 namespace MicroBootstrap.Messaging.Transport.Rabbitmq;
 

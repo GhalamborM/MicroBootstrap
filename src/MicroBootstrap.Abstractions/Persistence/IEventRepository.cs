@@ -1,4 +1,4 @@
-﻿using MicroBootstrap.Abstractions.Domain.Events;
+﻿using MicroBootstrap.Abstractions.Core.Domain.Events;
 
 namespace MicroBootstrap.Abstractions.Persistence
 {

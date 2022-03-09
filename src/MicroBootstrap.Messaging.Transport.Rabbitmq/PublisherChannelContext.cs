@@ -1,3 +1,5 @@
+using RabbitMQ.Client;
+
 namespace MicroBootstrap.Messaging.Transport.Rabbitmq;
 
 public sealed class PublisherChannelContext : IDisposable

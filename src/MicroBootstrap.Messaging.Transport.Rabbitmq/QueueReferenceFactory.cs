@@ -1,4 +1,7 @@
 using System.Collections.Concurrent;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Abstractions.Types;
+using MicroBootstrap.Core.Extensions.Utils.Reflections;
 
 namespace MicroBootstrap.Messaging.Transport.Rabbitmq;
 
@@ -11,14 +14,14 @@ namespace MicroBootstrap.Messaging.Transport.Rabbitmq;
         public QueueReferenceFactory(
             IServiceProvider sp,
             ISystemInfo systemInfo,
-            Func<Type, QueueReferences> defaultCreator = null)
+            Func<Type, QueueReferences>? defaultCreator = null)
         {
             _sp = sp ?? throw new ArgumentNullException(nameof(sp));
             var systemInfo1 = systemInfo ?? throw new ArgumentNullException(nameof(systemInfo));
 
             _defaultCreator = defaultCreator ?? (messageType =>
             {
-                var exchangeName = messageType.Name?.ToLower();
+                var exchangeName = messageType.Name.ToLower();
 
                 var isEvent = messageType.IsEvent();
 

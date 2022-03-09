@@ -1,5 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Tracing;
+using MicroBootstrap.Tracing.Messaging.Events;
+using MicroBootstrap.Tracing.Transports;
+using Microsoft.AspNetCore.Http;
+using OpenTelemetry.Context.Propagation;
 using NameValueHeaderValue = Microsoft.Net.Http.Headers.NameValueHeaderValue;
 
 namespace MicroBootstrap.Messaging.Transport.InMemory.Diagnostics;

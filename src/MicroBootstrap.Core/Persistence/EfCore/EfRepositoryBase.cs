@@ -1,4 +1,11 @@
 using System.Linq.Expressions;
+using Ardalis.GuardClauses;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Persistence.EfCore;
+using MicroBootstrap.Abstractions.Persistence.EfCore.Specification;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace MicroBootstrap.Core.Persistence.EfCore;
 

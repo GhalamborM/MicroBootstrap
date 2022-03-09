@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using MediatR;
+using MicroBootstrap.Abstractions.CQRS.Command;
 
 namespace MicroBootstrap.Scheduling.Hangfire;
 

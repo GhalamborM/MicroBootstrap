@@ -1,6 +1,10 @@
-﻿namespace MicroBootstrap.Persistence.EventStoreDB.Subscriptions;
+﻿using EventStore.Client;
+using MicroBootstrap.Core.Domain.Events.Internal;
+using MicroBootstrap.Persistence.EventStoreDB.Extensions;
 
-public record CheckpointStored(string SubscriptionId, ulong? Position, DateTime CheckPointedAt) : Event;
+namespace MicroBootstrap.Persistence.EventStoreDB.Subscriptions;
+
+public record CheckpointStored(string SubscriptionId, ulong? Position, DateTime CheckPointedAt) : DomainEvent;
 
 public class EventStoreDbSubscriptionCheckPointRepository : ISubscriptionCheckpointRepository
 {

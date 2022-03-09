@@ -1,3 +1,10 @@
+using Ardalis.GuardClauses;
+using Confluent.Kafka;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Abstractions.Messaging.Transport;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+
 namespace MicroBootstrap.Messaging.Transport.Kafka.Producers;
 
 public class KafkaProducer : IEventBusPublisher

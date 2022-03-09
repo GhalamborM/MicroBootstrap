@@ -1,4 +1,8 @@
 using System.Text;
+using MicroBootstrap.Abstractions.Core.Domain.Events.External;
+using MicroBootstrap.Abstractions.Messaging.Serialization;
+using MicroBootstrap.Abstractions.Types;
+using RabbitMQ.Client;
 
 namespace MicroBootstrap.Messaging.Transport.Rabbitmq;
 

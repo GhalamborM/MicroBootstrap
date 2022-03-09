@@ -1,3 +1,6 @@
+using Marten;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+
 namespace MicroBootstrap.Persistence.Marten;
 
 public class MartenUnitOfWork : IMartenUnitOfWork
@@ -26,6 +29,7 @@ public class MartenUnitOfWork : IMartenUnitOfWork
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        _documentSession.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

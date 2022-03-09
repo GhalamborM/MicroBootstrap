@@ -1,4 +1,11 @@
-﻿using MicroBootstrap.Scheduling.Hangfire.Scheduler;
+﻿using Hangfire;
+using Hangfire.PostgreSql;
+using MicroBootstrap.Abstractions.Scheduler;
+using MicroBootstrap.Scheduling.Hangfire.Scheduler;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace MicroBootstrap.Scheduling.Hangfire;
 

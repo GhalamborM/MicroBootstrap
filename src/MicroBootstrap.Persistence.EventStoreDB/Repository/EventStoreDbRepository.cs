@@ -1,78 +1,22 @@
-﻿using System.Linq.Expressions;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
 
 namespace MicroBootstrap.Persistence.EventStoreDB.Repository;
 
-public class EventStoreDbRepository<T, TId> : IRepository<T, TId>
-    where T : class, IHaveIdentity<TId>
+public class EventStoreDbRepository : IEventSourcingRepository
 {
-    private readonly EventStoreClient _eventStoreDbClient;
-    private readonly IEventProcessor _eventProcessor;
-
-    public EventStoreDbRepository(
-        EventStoreClient eventStoreDbClient,
-        IEventProcessor eventProcessor
-    )
-    {
-        _eventStoreDbClient = eventStoreDbClient;
-        _eventProcessor = eventProcessor;
-    }
-
-    public Task<T?> FindByIdAsync(TId id, CancellationToken cancellationToken = default)
+    public Task<TAggregate> GetByIdAsync<TAggregate, TAggregateId>(
+        TAggregateId aggregateId,
+        CancellationToken cancellationToken = default)
+        where TAggregate : IAggregate<TAggregateId>
     {
         throw new NotImplementedException();
     }
 
-    public Task<T?> FindOneAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IReadOnlyList<T>> RawQuery(string query, CancellationToken cancellationToken = default, params object[] queryParams)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<T> UpdateAsync(T entity, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteRangeAsync(IReadOnlyList<T> entities, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteByIdAsync(TId id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Dispose()
+    public Task AddAsync<TAggregate>(
+        TAggregate aggregate,
+        long? expectedVersion = null,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

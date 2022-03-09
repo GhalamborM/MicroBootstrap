@@ -1,3 +1,8 @@
+using Ardalis.GuardClauses;
+using MicroBootstrap.Abstractions.Caching;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+
 namespace MicroBootstrap.Caching.InMemory;
 
 public class InMemoryCacheProvider : ICacheProvider

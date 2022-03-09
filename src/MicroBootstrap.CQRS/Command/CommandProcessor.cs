@@ -1,3 +1,7 @@
+using MediatR;
+using MicroBootstrap.Abstractions.CQRS.Command;
+using MicroBootstrap.Abstractions.Scheduler;
+
 namespace MicroBootstrap.CQRS.Command;
 
 public class CommandProcessor : ICommandProcessor

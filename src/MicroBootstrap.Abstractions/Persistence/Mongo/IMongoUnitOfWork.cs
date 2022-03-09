@@ -1,6 +1,5 @@
 namespace MicroBootstrap.Abstractions.Persistence.Mongo;
 
-public interface IMongoUnitOfWork<TContext> : IUnitOfWork<TContext>
-    where TContext : MongoDbContext
+public interface IMongoUnitOfWork<out TContext> : IUnitOfWork<TContext> where TContext : class, IMongoDbContext
 {
 }

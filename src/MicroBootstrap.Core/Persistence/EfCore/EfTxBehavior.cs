@@ -1,5 +1,11 @@
 using System.Diagnostics;
 using System.Text.Json;
+using MediatR;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+using MicroBootstrap.Abstractions.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MicroBootstrap.Core.Persistence.EfCore;
 

@@ -1,4 +1,10 @@
 using System.Linq.Expressions;
+using Ardalis.GuardClauses;
+using Marten;
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Persistence;
 
 namespace MicroBootstrap.Persistence.Marten.Repositories;
 

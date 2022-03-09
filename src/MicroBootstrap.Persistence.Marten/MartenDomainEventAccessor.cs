@@ -1,3 +1,6 @@
+using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+
 namespace MicroBootstrap.Persistence.Marten;
 
 public class MartenDomainEventAccessor : IDomainEventsAccessor

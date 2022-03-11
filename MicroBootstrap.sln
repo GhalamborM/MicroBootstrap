@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroBootstrap.Serializatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroBootstrap.Serialization", "src\MicroBootstrap.Serialization\MicroBootstrap.Serialization.csproj", "{9D9A5828-80DF-44FA-BB7B-345080F11AF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroBootstrap.Persistence.EventStoreDB.Tests", "tests\MicroBootstrap.Persistence.EventStoreDB.Tests\MicroBootstrap.Persistence.EventStoreDB.Tests.csproj", "{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -456,6 +458,18 @@ Global
 		{9D9A5828-80DF-44FA-BB7B-345080F11AF7}.Release|x64.Build.0 = Release|Any CPU
 		{9D9A5828-80DF-44FA-BB7B-345080F11AF7}.Release|x86.ActiveCfg = Release|Any CPU
 		{9D9A5828-80DF-44FA-BB7B-345080F11AF7}.Release|x86.Build.0 = Release|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Debug|x64.Build.0 = Debug|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Debug|x86.Build.0 = Debug|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Release|x64.ActiveCfg = Release|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Release|x64.Build.0 = Release|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Release|x86.ActiveCfg = Release|Any CPU
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F6F654A7-1402-447D-AE3F-7870AC38265E} = {39724554-F0D9-4818-897D-32D7E7CB3234}
@@ -489,5 +503,6 @@ Global
 		{EA8F3485-50DB-4CE4-BDCE-E5D425CD1C4B} = {39724554-F0D9-4818-897D-32D7E7CB3234}
 		{19D83B07-B641-44B5-A195-B5D03D96DFBE} = {070AF30A-DB39-4F97-BE58-97E89F1667CB}
 		{9D9A5828-80DF-44FA-BB7B-345080F11AF7} = {39724554-F0D9-4818-897D-32D7E7CB3234}
+		{83AE7DFF-87E4-46A7-BEE0-A3D03E335330} = {070AF30A-DB39-4F97-BE58-97E89F1667CB}
 	EndGlobalSection
 EndGlobal

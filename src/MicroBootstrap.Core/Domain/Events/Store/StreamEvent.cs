@@ -1,9 +1,14 @@
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 
-namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+namespace MicroBootstrap.Core.Domain.Events.Store;
 
-public record StreamEvent(IDomainEvent Data, IStreamEventMetadata Metadata) : Event, IStreamEvent;
+public record StreamEvent
+    (IDomainEvent Data, long StreamPosition, IStreamEventMetadata? Metadata = null) : Event, IStreamEvent;
 
-public record StreamEvent<T>(T Data, IStreamEventMetadata Metadata) : Event, IStreamEvent<T>
-    where T : IDomainEvent;
+public record StreamEvent<T>(T Data, long StreamPosition, IStreamEventMetadata? Metadata = null)
+    : StreamEvent(Data, StreamPosition, Metadata), IStreamEvent<T>
+    where T : IDomainEvent
+{
+    public new T Data => (T)base.Data;
+}

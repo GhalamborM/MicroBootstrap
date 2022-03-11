@@ -1,9 +1,10 @@
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
 
 namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 
-public interface IHaveEventSourcingAggregate : IHaveAggregateStateProjection
+public interface IHaveEventSourcingAggregate : IHaveAggregateStateProjection, IHaveAggregate
 {
     string StreamName { get; }
 

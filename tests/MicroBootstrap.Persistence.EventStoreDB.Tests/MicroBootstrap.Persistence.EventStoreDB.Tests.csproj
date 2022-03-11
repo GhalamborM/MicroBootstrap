@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MicroBootstrap.Serialization\MicroBootstrap.Serialization.csproj" />
+    <ProjectReference Include="..\..\src\MicroBootstrap.Persistence.EventStoreDB\MicroBootstrap.Persistence.EventStoreDB.csproj" />
   </ItemGroup>
 
 </Project>

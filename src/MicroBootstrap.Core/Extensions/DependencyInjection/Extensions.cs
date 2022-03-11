@@ -8,6 +8,7 @@ using MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
 using MicroBootstrap.Abstractions.Types;
 using MicroBootstrap.Core.Domain.Events;
 using MicroBootstrap.Core.Domain.Events.Store;
+using MicroBootstrap.Core.Domain.Events.Store.InMemory;
 using MicroBootstrap.Core.Extensions.Registration;
 using MicroBootstrap.Core.IdsGenerator;
 using MicroBootstrap.Core.Types;
@@ -32,6 +33,9 @@ public static class Extensions
         services.AddScoped<IIntegrationEventPublisher, IntegrationEventPublisher>();
         services.AddScoped<IDomainNotificationEventPublisher, DomainNotificationEventPublisher>();
         services.AddScoped<IAggregatesDomainEventsStore, AggregatesDomainEventsStore>();
+
+        AddEventStore<InMemoryEventStore>(services, ServiceLifetime.Scoped);
+        services.AddScoped<IEventStoreRepository, EventStoreRepository>();
 
         switch (configuration["IdGenerator:Type"])
         {

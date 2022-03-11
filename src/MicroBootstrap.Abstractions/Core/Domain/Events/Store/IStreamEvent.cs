@@ -2,13 +2,20 @@ using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 
 namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 
-public interface IStreamEvent : IStreamEvent<IDomainEvent>
+public interface IStreamEvent : IEvent
 {
+    public IDomainEvent Data { get; }
+
+    /// <summary>
+    /// Gets EventNumber or EventSequenceNumber
+    /// </summary>
+    public long StreamPosition { get; }
+
+    public IStreamEventMetadata? Metadata { get; }
 }
 
-public interface IStreamEvent<T> : IEvent
+public interface IStreamEvent<out T> : IStreamEvent
     where T : IDomainEvent
 {
-    public T Data { get; init; }
-    public IStreamEventMetadata Metadata { get; init; }
+    public new T Data { get; }
 }

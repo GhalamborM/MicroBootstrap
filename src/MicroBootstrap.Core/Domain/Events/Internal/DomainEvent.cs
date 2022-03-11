@@ -5,12 +5,12 @@ namespace MicroBootstrap.Core.Domain.Events.Internal;
 public abstract record DomainEvent : Event, IDomainEvent
 {
     public dynamic AggregateId { get; protected set; } = null!;
-    public long SequenceNumber { get; protected set; }
+    public long AggregateSequenceNumber { get; protected set; }
 
     public virtual IDomainEvent WithAggregate(dynamic aggregateId, long version)
     {
         AggregateId = aggregateId;
-        SequenceNumber = version;
+        AggregateSequenceNumber = version;
 
         return this;
     }

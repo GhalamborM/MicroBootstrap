@@ -2,7 +2,7 @@ using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 
 namespace MicroBootstrap.Abstractions.Core.Domain.Model;
 
-public interface IHaveAggregate
+public interface IHaveAggregate : IHaveVersion
 {
     /// <summary>
     /// Add the <paramref name="domainEvent"/> on the aggregate root.

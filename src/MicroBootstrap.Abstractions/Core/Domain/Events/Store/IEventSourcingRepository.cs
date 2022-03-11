@@ -1,32 +1,35 @@
-using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 
 namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 
-public interface IEventSourcingRepository
+public interface IEventStoreRepository
 {
     /// <summary>
-    /// Fetches aggregate
+    /// Load the aggregate from the store with a aggregate id
     /// </summary>
     /// <typeparam name="TAggregate">Type of aggregate.</typeparam>
-    /// <typeparam name="TAggregateId">Type of aggregate id.</typeparam>
+    /// <typeparam name="TId">Type of Id.</typeparam>
     /// <param name="aggregateId">Id of aggregate.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>Task with aggregate as result.</returns>
-    Task<TAggregate> GetByIdAsync<TAggregate, TAggregateId>(
-        TAggregateId aggregateId,
+    Task<TAggregate?> GetByIdAsync<TAggregate, TId>(
+        TId aggregateId,
         CancellationToken cancellationToken = default)
-        where TAggregate : IAggregate<TAggregateId>;
+        where TAggregate : IEventSourcedAggregate<TId>;
 
     /// <summary>
-    /// Add our aggregate as event sourced in event-store.
+    /// Store an aggregate state to the store with using some events.
     /// </summary>
     /// <typeparam name="TAggregate">Type of aggregate.</typeparam>
+    /// <typeparam name="TId">Type of Id.</typeparam>
     /// <param name="aggregate">Aggregate object to be saved.</param>
     /// <param name="expectedVersion">Expected version saved from earlier. -1 if new.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>Task of operation.</returns>
-    Task AddAsync<TAggregate>(
+    Task Store<TAggregate, TId>(
         TAggregate aggregate,
-        long? expectedVersion = null,
-        CancellationToken cancellationToken = default);
+        ExpectedStreamVersion? expectedVersion = null,
+        CancellationToken cancellationToken = default)
+        where TAggregate : IEventSourcedAggregate<TId>;
+
 }

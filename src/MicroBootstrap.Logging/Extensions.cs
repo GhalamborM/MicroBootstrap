@@ -5,6 +5,7 @@ using Serilog;
 using Serilog.Configuration;
 using Serilog.Enrichers.Span;
 using Serilog.Events;
+using Serilog.Exceptions;
 using Serilog.Filters;
 using Serilog.Sinks.SpectreConsole;
 
@@ -25,6 +26,8 @@ public static class HostBuilderExtensions
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.WithTraceId(httpContext)
                 .Enrich.WithSpan()
+                .Enrich.WithExceptionDetails()
+                .Enrich.WithCorrelationIdHeader()
                 .Enrich.FromLogContext();
 
             var loggerOptions = context.Configuration.GetSection(nameof(LoggerOptions)).Get<LoggerOptions>();

@@ -4,7 +4,15 @@ namespace MicroBootstrap.Abstractions.Core.Domain.Model;
 
 public interface IAggregate<out TId> : IEntity<TId>, IHaveAggregate
 {
+    /// <summary>
+    /// Check specific rule for aggregate and throw an exception if rule is not satisfied.
+    /// </summary>
+    /// <param name="rule"></param>
     void CheckRule(IBusinessRule rule);
+
+    /// <summary>
+    /// Gets get the list of pending changes domain events to be applied to the aggregate.
+    /// </summary>
     IReadOnlyList<IDomainEvent> DomainEvents { get; }
 }
 

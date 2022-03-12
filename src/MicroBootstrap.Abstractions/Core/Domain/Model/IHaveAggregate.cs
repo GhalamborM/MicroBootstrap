@@ -5,7 +5,7 @@ namespace MicroBootstrap.Abstractions.Core.Domain.Model;
 public interface IHaveAggregate : IHaveVersion
 {
     /// <summary>
-    /// Add the <paramref name="domainEvent"/> on the aggregate root.
+    /// Add the <paramref name="domainEvent"/> ot the aggregate pending changes event.
     /// </summary>
     /// <param name="domainEvent">The domain event.</param>
     void AddDomainEvent(IDomainEvent domainEvent);

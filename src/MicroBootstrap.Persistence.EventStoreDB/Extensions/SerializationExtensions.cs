@@ -29,8 +29,7 @@ public static class SerializationExtensions
             _serializerSettings)!;
     }
 
-    public static EventData ToJsonEventData<T>(this IStreamEvent<T> @event)
-        where T : IDomainEvent
+    public static EventData ToJsonEventData(this IStreamEvent @event)
         => new(
             Uuid.NewUuid(),
             EventTypeMapper.ToName(@event.GetType()),
@@ -38,12 +37,10 @@ public static class SerializationExtensions
             Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event.Metadata ?? new object(), _serializerSettings))
         );
 
-    public static IEnumerable<EventData> ToJsonEventData<T>(this IEnumerable<IStreamEvent<T>> events)
-        where T : IDomainEvent
+    public static IEnumerable<EventData> ToJsonEventData(this IEnumerable<IStreamEvent> events)
         => events.Select(e => e.ToJsonEventData());
 
-    public static EventData ToJsonEventData<T>(this T @event, IStreamEventMetadata? metadata = null)
-        where T : IDomainEvent
+    public static EventData ToJsonEventData(this IDomainEvent @event, IStreamEventMetadata? metadata = null)
         => new(
             Uuid.NewUuid(),
             EventTypeMapper.ToName(@event.GetType()),
@@ -55,7 +52,9 @@ public static class SerializationExtensions
     {
         var eventData = resolvedEvent.Deserialize();
 
-        var metaData = new StreamEventMetadata(resolvedEvent.Event.EventId.ToString());
+        var metaData = new StreamEventMetadata(
+            resolvedEvent.Event.EventId.ToString(),
+            resolvedEvent.Event.EventNumber.ToInt64());
 
         var type = typeof(StreamEvent<>).MakeGenericType(eventData.GetType());
         return (StreamEvent)Activator.CreateInstance(

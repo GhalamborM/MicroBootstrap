@@ -1,4 +1,3 @@
-using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 
 namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
@@ -6,27 +5,27 @@ namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 public interface IEventStore
 {
     /// <summary>
-    /// Gets events for an specific streamId.
+    /// Gets events for an specific stream.
     /// </summary>
     /// <param name="streamId">Id of our aggregate or stream.</param>
     /// <param name="fromVersion">All events after this should be returned.</param>
     /// <param name="maxCount">Number of items to read.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>Task with events for aggregate.</returns>
-    Task<IEnumerable<IStreamEvent>> GetAsync(
+    Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
         string streamId,
         StreamReadPosition? fromVersion = null,
         long maxCount = long.MaxValue,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Gets events for an specific streamId.
+    /// Gets events for an specific stream.
     /// </summary>
     /// <param name="streamId">Id of our aggregate or stream.</param>
     /// <param name="fromVersion">All events after this should be returned.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>Task with events for aggregate.</returns>
-    Task<IEnumerable<IStreamEvent>> GetAsync(
+    Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
         string streamId,
         StreamReadPosition? fromVersion = null,
         CancellationToken cancellationToken = default);
@@ -37,13 +36,11 @@ public interface IEventStore
     /// <param name="streamId">Id of our aggregate or stream.</param>
     /// <param name="event">domain event to append the aggregate.</param>
     /// <param name="cancellationToken"></param>
-    /// <typeparam name="TEvent"></typeparam>
     /// <returns></returns>
-    Task<AppendResult> AppendAsync<TEvent>(
+    Task<AppendResult> AppendEventAsync(
         string streamId,
-        IStreamEvent<TEvent> @event,
-        CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent;
+        IStreamEvent @event,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Append event to aggregate with a existing or none existing stream.
@@ -52,14 +49,12 @@ public interface IEventStore
     /// <param name="event">domain event to append the aggregate.</param>
     /// <param name="expectedRevision"></param>
     /// <param name="cancellationToken"></param>
-    /// <typeparam name="TEvent"></typeparam>
     /// <returns></returns>
-    Task<AppendResult> AppendAsync<TEvent>(
+    Task<AppendResult> AppendEventAsync(
         string streamId,
-        IStreamEvent<TEvent> @event,
+        IStreamEvent @event,
         ExpectedStreamVersion expectedRevision,
-        CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent;
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Append events to aggregate with a existing or none existing stream.
@@ -68,22 +63,20 @@ public interface IEventStore
     /// <param name="events">domain event to append the aggregate.</param>
     /// <param name="expectedRevision"></param>
     /// <param name="cancellationToken"></param>
-    /// <typeparam name="TEvent"></typeparam>
     /// <returns></returns>
-    Task<AppendResult> AppendAsync<TEvent>(
+    Task<AppendResult> AppendEventsAsync(
         string streamId,
-        IReadOnlyCollection<IStreamEvent<TEvent>> events,
+        IReadOnlyCollection<IStreamEvent> events,
         ExpectedStreamVersion expectedRevision,
-        CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent;
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Rehydrating aggregate from events in the event store.
     /// </summary>
     /// <param name="streamId"></param>
     /// <param name="fromVersion"></param>
-    /// <param name="getDefault"></param>
-    /// <param name="when"></param>
+    /// <param name="defaultAggregate"></param>
+    /// <param name="fold"></param>
     /// <param name="cancellationToken"></param>
     /// <typeparam name="TAggregate"></typeparam>
     /// <typeparam name="TId"></typeparam>
@@ -91,25 +84,25 @@ public interface IEventStore
     Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         StreamReadPosition fromVersion,
-        Func<TAggregate> getDefault,
-        Func<TAggregate, object, TAggregate> when,
+        Func<TAggregate> defaultAggregate,
+        Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : class, IEventSourcedAggregate<TId>;
+        where TAggregate : IEventSourcedAggregate<TId>, new();
 
     /// <summary>
     ///  Rehydrating aggregate from events in the event store.
     /// </summary>
     /// <param name="streamId"></param>
-    /// <param name="getDefault"></param>
-    /// <param name="when"></param>
+    /// <param name="defaultAggregate"></param>
+    /// <param name="fold"></param>
     /// <param name="cancellationToken"></param>
     /// <typeparam name="TAggregate"></typeparam>
     /// <typeparam name="TId"></typeparam>
     /// <returns></returns>
     Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
-        Func<TAggregate> getDefault,
-        Func<TAggregate, object, TAggregate> when,
+        Func<TAggregate> defaultAggregate,
+        Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : class, IEventSourcedAggregate<TId>;
+        where TAggregate : IEventSourcedAggregate<TId>, new();
 }

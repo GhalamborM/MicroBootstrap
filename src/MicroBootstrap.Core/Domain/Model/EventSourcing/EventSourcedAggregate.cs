@@ -1,10 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using IdGen;
 using MicroBootstrap.Abstractions.Core.Domain;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
-using MicroBootstrap.Abstractions.Core.Domain.Model;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 using MicroBootstrap.Abstractions.Domain.Exceptions;
 using MicroBootstrap.Core.Extensions.Utils.Reflections;
@@ -12,28 +9,24 @@ using MicroBootstrap.Core.Extensions.Utils.Reflections;
 namespace MicroBootstrap.Abstractions.Domain.Model.EventSourcing;
 
 public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TId>
-
 {
     [NonSerialized] private readonly ConcurrentQueue<IDomainEvent> _uncommittedDomainEvents = new();
 
+    // -1: No Stream
     public const long NewAggregateVersion = -1;
 
-    /// <summary>
-    /// Gets or sets current version of our aggregate.
-    /// It should increase for each state transition performed.
-    /// </summary>
-    public long Version { get; private set; } = NewAggregateVersion;
+    /// <inheritdoc />
+    public long OriginalVersion { get; private set; } = NewAggregateVersion;
 
-    /// <summary>
-    /// Get the list of pending changes domain events to be applied to the aggregate.
-    /// </summary>
+    /// <inheritdoc />
+    public long CurrentVersion { get; private set; } = NewAggregateVersion;
+
+    /// <inheritdoc />
     public IReadOnlyList<IDomainEvent> DomainEvents => _uncommittedDomainEvents.ToImmutableList();
-
-    public string StreamName => $"{GetType().Name}-{Id}";
 
     /// <summary>
     /// Applies a new event to the aggregate state, adds the event to the list of pending changes,
-    /// and increases the current version.
+    /// and increases the `CurrentVersion` property and `OriginalState` will be unchanged.
     /// </summary>
     /// <typeparam name="TDomainEvent">Type of domain event.</typeparam>
     /// <param name="domainEvent"></param>
@@ -42,19 +35,15 @@ public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TI
     {
         AddDomainEvent(domainEvent);
         When(domainEvent);
+        CurrentVersion++;
     }
 
+    /// <inheritdoc />
     public void When(object @event)
-    {
-        When(@event, Version++);
-    }
-
-    public void When(object @event, long version)
     {
         if (GetType().HasAggregateApplyMethod(@event.GetType()))
         {
             ((dynamic)this).Apply((dynamic)@event);
-            Version = version;
         }
         else
         {
@@ -62,23 +51,34 @@ public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TI
         }
     }
 
+    /// <inheritdoc />
+    public void Fold(object @event)
+    {
+        When(@event);
+        OriginalVersion++;
+        CurrentVersion++;
+    }
+
+    /// <inheritdoc />
     public void LoadFromHistory(IEnumerable<IDomainEvent> domainEvents)
     {
         foreach (var domainEvent in domainEvents)
         {
-            When(domainEvent);
+            Fold(domainEvent);
         }
     }
 
+    /// <inheritdoc />
     public void AddDomainEvent(IDomainEvent domainEvent)
     {
         if (!_uncommittedDomainEvents.Any(x => Equals(x.EventId, domainEvent.EventId)))
         {
-            IDomainEvent eventWithAggregate = domainEvent.WithAggregate(Id, Version);
+            IDomainEvent eventWithAggregate = domainEvent.WithAggregate(Id, CurrentVersion + 1);
             _uncommittedDomainEvents.Enqueue(eventWithAggregate);
         }
     }
 
+    /// <inheritdoc />
     public IReadOnlyList<IDomainEvent> FlushUncommittedEvents()
     {
         var events = _uncommittedDomainEvents.ToImmutableList();
@@ -88,16 +88,19 @@ public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TI
         return events;
     }
 
+    /// <inheritdoc />
     public IReadOnlyList<IDomainEvent> GetUncommittedEvents()
     {
         return _uncommittedDomainEvents.ToImmutableList();
     }
 
+    /// <inheritdoc />
     public void ClearUncommittedEvents()
     {
         _uncommittedDomainEvents.Clear();
     }
 
+    /// <inheritdoc />
     public void CheckRule(IBusinessRule rule)
     {
         if (rule.IsBroken())

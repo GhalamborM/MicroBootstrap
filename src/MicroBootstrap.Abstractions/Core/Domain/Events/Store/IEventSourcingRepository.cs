@@ -12,10 +12,10 @@ public interface IEventStoreRepository
     /// <param name="aggregateId">Id of aggregate.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>Task with aggregate as result.</returns>
-    Task<TAggregate?> GetByIdAsync<TAggregate, TId>(
+    Task<TAggregate?> GetAsync<TAggregate, TId>(
         TId aggregateId,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>;
+        where TAggregate : IEventSourcedAggregate<TId>, new();
 
     /// <summary>
     /// Store an aggregate state to the store with using some events.
@@ -26,10 +26,22 @@ public interface IEventStoreRepository
     /// <param name="expectedVersion">Expected version saved from earlier. -1 if new.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>Task of operation.</returns>
-    Task Store<TAggregate, TId>(
+    Task<AppendResult> Store<TAggregate, TId>(
         TAggregate aggregate,
         ExpectedStreamVersion? expectedVersion = null,
         CancellationToken cancellationToken = default)
         where TAggregate : IEventSourcedAggregate<TId>;
 
+    /// <summary>
+    /// Store an aggregate state to the store with using some events.
+    /// </summary>
+    /// <typeparam name="TAggregate">Type of aggregate.</typeparam>
+    /// <typeparam name="TId">Type of Id.</typeparam>
+    /// <param name="aggregate">Aggregate object to be saved.</param>
+    /// <param name="cancellationToken">Optional cancellation token.</param>
+    /// <returns>Task of operation.</returns>
+    public Task Store<TAggregate, TId>(
+        TAggregate aggregate,
+        CancellationToken cancellationToken = default)
+        where TAggregate : IEventSourcedAggregate<TId>;
 }

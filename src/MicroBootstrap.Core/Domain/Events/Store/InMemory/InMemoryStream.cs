@@ -1,10 +1,6 @@
-using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 
 namespace MicroBootstrap.Core.Domain.Events.Store.InMemory;
-
-record InMemoryEvent<TEvent>(IStreamEvent<TEvent> Event, int Position)
-    where TEvent : IDomainEvent;
 
 public class InMemoryStream
 {
@@ -23,16 +19,15 @@ public class InMemoryStream
             throw new System.Exception($"Wrong stream version. Expected {expectedVersion.Value}, actual {Version}");
     }
 
-    public void AppendEvents<TEvent>(
+    public void AppendEvents(
         ExpectedStreamVersion expectedVersion,
-        IReadOnlyCollection<IStreamEvent<TEvent>> events)
-        where TEvent : IDomainEvent
+        IReadOnlyCollection<IStreamEvent> events)
     {
         CheckVersion(expectedVersion);
 
         foreach (var streamEvent in events)
         {
-            _events.Add(new InMemoryEvent<TEvent>(streamEvent, ++Version));
+            _events.Add(new InMemoryEvent(streamEvent, ++Version));
         }
     }
 
@@ -43,7 +38,7 @@ public class InMemoryStream
 
         if (count > 0) selected = selected.Take((int)count);
 
-        return selected.Select(x => new StreamEvent(x.Data, x.Position, x.LogPosition, x.Metadata));
+        return selected.Select(x => new StreamEvent(x.Data, x.Metadata));
     }
 
     public IEnumerable<StreamEvent> GetEventsBackwards(int count)

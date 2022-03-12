@@ -229,7 +229,7 @@ public static class ReflectionHelpers
             .FirstOrDefault();
     }
 
-    public static Type? GetFirstMatchingTypeFromCurrentDomainAssembly(string typeName)
+    public static Type? GetFirstMatchingTypeFromCurrentDomainAssemblies(string typeName)
     {
         return AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(a => a.GetTypes().Where(x => x.FullName == typeName || x.Name == typeName))

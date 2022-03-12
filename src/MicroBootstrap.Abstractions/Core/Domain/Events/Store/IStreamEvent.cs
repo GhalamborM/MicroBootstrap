@@ -6,11 +6,6 @@ public interface IStreamEvent : IEvent
 {
     public IDomainEvent Data { get; }
 
-    /// <summary>
-    /// Gets EventNumber or EventSequenceNumber
-    /// </summary>
-    public long StreamPosition { get; }
-
     public IStreamEventMetadata? Metadata { get; }
 }
 

@@ -1,4 +1,3 @@
-using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 
@@ -9,7 +8,7 @@ public class InMemoryEventStore : IEventStore
     private readonly Dictionary<string, InMemoryStream> _storage = new();
     private readonly List<dynamic> _global = new();
 
-    public Task<IEnumerable<IStreamEvent>> GetAsync(
+    public Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
         string streamId,
         StreamReadPosition? fromVersion = null,
         long maxCount = long.MaxValue,
@@ -18,26 +17,25 @@ public class InMemoryEventStore : IEventStore
         return Task.FromResult(FindStream(streamId).GetEvents(fromVersion ?? StreamReadPosition.Start, maxCount));
     }
 
-    public Task<IEnumerable<IStreamEvent>> GetAsync(
+    public Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
         string streamId,
         StreamReadPosition? fromVersion = null,
         CancellationToken cancellationToken = default)
     {
-        return GetAsync(streamId, fromVersion, long.MaxValue, cancellationToken);
+        return GetStreamEventsAsync(streamId, fromVersion, long.MaxValue, cancellationToken);
     }
 
-    public Task<AppendResult> AppendAsync<TEvent>(
+    public Task<AppendResult> AppendEventAsync(
         string streamId,
-        IStreamEvent<TEvent> @event,
+        IStreamEvent @event,
         CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent
     {
         if (!_storage.TryGetValue(streamId, out var existing))
         {
             existing = new InMemoryStream(streamId);
         }
 
-        var events = new List<IStreamEvent<TEvent>> { @event };
+        var events = new List<IStreamEvent> { @event };
         existing.AppendEvents(ExpectedStreamVersion.NoStream, events.AsReadOnly());
 
         _global.AddRange(events);
@@ -47,19 +45,18 @@ public class InMemoryEventStore : IEventStore
         );
     }
 
-    public Task<AppendResult> AppendAsync<TEvent>(
+    public Task<AppendResult> AppendEventAsync(
         string streamId,
-        IStreamEvent<TEvent> @event,
+        IStreamEvent @event,
         ExpectedStreamVersion expectedRevision,
         CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent
     {
         if (!_storage.TryGetValue(streamId, out var existing))
         {
             existing = new InMemoryStream(streamId);
         }
 
-        var events = new List<IStreamEvent<TEvent>> { @event };
+        var events = new List<IStreamEvent> { @event };
         existing.AppendEvents(expectedRevision, events.AsReadOnly());
 
         _global.AddRange(events);
@@ -69,12 +66,11 @@ public class InMemoryEventStore : IEventStore
         );
     }
 
-    public Task<AppendResult> AppendAsync<TEvent>(
+    public Task<AppendResult> AppendEventsAsync(
         string streamId,
-        IReadOnlyCollection<IStreamEvent<TEvent>> events,
+        IReadOnlyCollection<IStreamEvent> events,
         ExpectedStreamVersion expectedRevision,
         CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent
     {
         if (!_storage.TryGetValue(streamId, out var existing))
         {
@@ -93,16 +89,21 @@ public class InMemoryEventStore : IEventStore
     public Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         StreamReadPosition fromVersion,
-        Func<TAggregate> getDefault,
-        Func<TAggregate, object, TAggregate> when,
+        Func<TAggregate> defaultAggregate,
+        Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : class, IEventSourcedAggregate<TId>
+        where TAggregate : IEventSourcedAggregate<TId>, new()
     {
         var streamEvents = FindStream(streamId).GetEvents(fromVersion, long.MaxValue).ToList();
+        var aggregate = AggregateFactory<TAggregate>.CreateAggregate();
 
         var result = streamEvents.Aggregate(
-            getDefault.Invoke(),
-            when
+            aggregate,
+            (agg, @event) =>
+            {
+                fold(@event);
+                return agg;
+            }
         );
 
         return Task.FromResult(result);
@@ -110,16 +111,16 @@ public class InMemoryEventStore : IEventStore
 
     public Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
-        Func<TAggregate> getDefault,
-        Func<TAggregate, object, TAggregate> when,
+        Func<TAggregate> defaultAggregate,
+        Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : class, IEventSourcedAggregate<TId>
+        where TAggregate : IEventSourcedAggregate<TId>, new()
     {
         return AggregateStreamAsync<TAggregate, TId>(
             streamId,
             StreamReadPosition.Start,
-            getDefault,
-            when,
+            defaultAggregate,
+            fold,
             cancellationToken);
     }
 

@@ -1,7 +1,7 @@
 using EventStore.Client;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
+using MicroBootstrap.Core.Domain;
 using MicroBootstrap.Persistence.EventStoreDB.Extensions;
 
 namespace MicroBootstrap.Persistence.EventStoreDB;
@@ -16,7 +16,7 @@ public class EventStoreDbEventStore : IEventStore
         _grpcClient = grpcClient;
     }
 
-    public async Task<IEnumerable<IStreamEvent>> GetAsync(
+    public async Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
         string streamId,
         StreamReadPosition? fromVersion = null,
         long maxCount = long.MaxValue,
@@ -35,19 +35,18 @@ public class EventStoreDbEventStore : IEventStore
         return resolvedEvents.ToStreamEvents();
     }
 
-    public Task<IEnumerable<IStreamEvent>> GetAsync(
+    public Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
         string streamId,
         StreamReadPosition? fromVersion = null,
         CancellationToken cancellationToken = default)
     {
-        return GetAsync(streamId, fromVersion, long.MaxValue, cancellationToken);
+        return GetStreamEventsAsync(streamId, fromVersion, long.MaxValue, cancellationToken);
     }
 
-    public async Task<AppendResult> AppendAsync<TEvent>(
+    public async Task<AppendResult> AppendEventAsync(
         string streamId,
-        IStreamEvent<TEvent> @event,
+        IStreamEvent @event,
         CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent
     {
         EventData eventData = @event.ToJsonEventData();
 
@@ -60,12 +59,11 @@ public class EventStoreDbEventStore : IEventStore
         return new AppendResult((long)result.LogPosition.CommitPosition, result.NextExpectedStreamRevision.ToInt64());
     }
 
-    public async Task<AppendResult> AppendAsync<TEvent>(
+    public async Task<AppendResult> AppendEventAsync(
         string streamId,
-        IStreamEvent<TEvent> @event,
+        IStreamEvent @event,
         ExpectedStreamVersion expectedRevision,
         CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent
     {
         EventData eventData = @event.ToJsonEventData();
 
@@ -108,12 +106,11 @@ public class EventStoreDbEventStore : IEventStore
         }
     }
 
-    public async Task<AppendResult> AppendAsync<TEvent>(
+    public async Task<AppendResult> AppendEventsAsync(
         string streamId,
-        IReadOnlyCollection<IStreamEvent<TEvent>> events,
+        IReadOnlyCollection<IStreamEvent> events,
         ExpectedStreamVersion expectedRevision,
         CancellationToken cancellationToken = default)
-        where TEvent : IDomainEvent
     {
         var eventsData = events.ToJsonEventData();
 
@@ -159,10 +156,10 @@ public class EventStoreDbEventStore : IEventStore
     public async Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         StreamReadPosition fromVersion,
-        Func<TAggregate> getDefault,
-        Func<TAggregate, object, TAggregate> when,
+        Func<TAggregate> defaultAggregate,
+        Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : class, IEventSourcedAggregate<TId>
+        where TAggregate : IEventSourcedAggregate<TId>, new()
     {
         var readResult = _grpcClient.ReadStreamAsync(
             Direction.Forwards,
@@ -174,24 +171,28 @@ public class EventStoreDbEventStore : IEventStore
         return await readResult
             .Select(@event => @event.Deserialize()!)
             .AggregateAsync(
-                getDefault.Invoke(),
-                when,
+                defaultAggregate(),
+                (agg, @event) =>
+                {
+                    fold(@event);
+                    return agg;
+                },
                 cancellationToken
             );
     }
 
     public Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
-        Func<TAggregate> getDefault,
-        Func<TAggregate, object, TAggregate> when,
+        Func<TAggregate> defaultAggregate,
+        Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : class, IEventSourcedAggregate<TId>
+        where TAggregate : IEventSourcedAggregate<TId>, new()
     {
         return AggregateStreamAsync<TAggregate, TId>(
             streamId,
             StreamReadPosition.Start,
-            getDefault,
-            when,
+            defaultAggregate,
+            fold,
             cancellationToken);
     }
 }

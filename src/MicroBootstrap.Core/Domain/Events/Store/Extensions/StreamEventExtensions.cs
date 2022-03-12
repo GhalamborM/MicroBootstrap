@@ -5,7 +5,7 @@ namespace MicroBootstrap.Core.Domain.Events.Store.Extensions;
 
 public static class StreamEventExtensions
 {
-    public static dynamic ToStreamEvent(
+    public static IStreamEvent ToStreamEvent(
         this IDomainEvent domainEvent,
         IStreamEventMetadata? metadata = null)
     {

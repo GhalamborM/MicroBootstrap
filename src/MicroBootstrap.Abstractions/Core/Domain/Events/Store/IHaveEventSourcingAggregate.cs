@@ -6,11 +6,9 @@ namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 
 public interface IHaveEventSourcingAggregate : IHaveAggregateStateProjection, IHaveAggregate
 {
-    string StreamName { get; }
-
     /// <summary>
-    /// Load an aggregate from an enumerable of events.
+    /// Update aggregate state from the events in the event store and increase the current version and original version.
     /// </summary>
-    /// <param name="domainEvents"></param>
+    /// <param name="domainEvents">Domain events from the aggregate stream.</param>
     void LoadFromHistory(IEnumerable<IDomainEvent> domainEvents);
 }

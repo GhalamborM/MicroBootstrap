@@ -1,10 +1,9 @@
-using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
+using System.Collections.Immutable;
+using Ardalis.GuardClauses;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 using MicroBootstrap.Abstractions.Domain.Exceptions;
-using MicroBootstrap.Core.Domain.Events.Internal;
 using MicroBootstrap.Core.Domain.Events.Store.Extensions;
-using Nito.AsyncEx;
 
 namespace MicroBootstrap.Core.Domain.Events.Store;
 
@@ -17,45 +16,66 @@ public class EventStoreRepository : IEventStoreRepository
         _eventStore = eventStore;
     }
 
-    public Task<TAggregate?> GetByIdAsync<TAggregate, TId>(
+    public async Task<TAggregate?> GetAsync<TAggregate, TId>(
         TId aggregateId,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>
+        where TAggregate : IEventSourcedAggregate<TId>, new()
     {
-        throw new NotImplementedException();
+        Guard.Against.Null(aggregateId, nameof(aggregateId));
+
+        var streamName = StreamName.For<TAggregate, TId>(aggregateId);
+
+        var aggregate = AggregateFactory<TAggregate>.CreateAggregate();
+
+        var result = await _eventStore.AggregateStreamAsync<TAggregate, TId>(
+            streamName,
+            StreamReadPosition.Start,
+            () => aggregate,
+            aggregate.Fold,
+            cancellationToken);
+
+        return result;
     }
 
-    public async Task Store<TAggregate, TId>(
+    public async Task<AppendResult> Store<TAggregate, TId>(
         TAggregate aggregate,
         ExpectedStreamVersion? expectedVersion = null,
         CancellationToken cancellationToken = default)
         where TAggregate : IEventSourcedAggregate<TId>
     {
+        Guard.Against.Null(aggregate, nameof(aggregate));
+
         var streamName = StreamName.For<TAggregate, TId>(aggregate.Id);
 
-        if (expectedVersion != null && (await _eventStore.GetAsync(
+        if (expectedVersion != null && (await _eventStore.GetStreamEventsAsync(
                 streamName,
                 new StreamReadPosition(expectedVersion.Value),
                 cancellationToken).ConfigureAwait(false)).Any())
         {
             throw new ConcurrencyException<TId>(aggregate.Id);
         }
-        else if (expectedVersion == null)
-        {
-            var savedChanges = await _eventStore.Get(aggregate.Id, aggregate.Version, cancellationToken)
-                .ConfigureAwait(false);
-            aggregate.LoadFromHistory(savedChanges);
-        }
 
-        ExpectedStreamVersion version = expectedVersion ?? new ExpectedStreamVersion(aggregate.Version);
+        ExpectedStreamVersion version = expectedVersion ?? new ExpectedStreamVersion(aggregate.OriginalVersion);
 
         var events = aggregate.FlushUncommittedEvents();
-        var initialVersion = aggregate.Version - events.Count;
 
-        foreach (var domainEvent in events)
-        {
-            var streamEvent = domainEvent.ToStreamEvent();
-            await _eventStore.AppendAsync(streamName, streamEvent, version, cancellationToken);
-        }
+        var result = await _eventStore.AppendEventsAsync(
+            streamName,
+            events.Select(x => x.ToStreamEvent()).ToImmutableList(),
+            version,
+            cancellationToken);
+
+        return result;
+    }
+
+    public Task Store<TAggregate, TId>(
+        TAggregate aggregate,
+        CancellationToken cancellationToken = default)
+        where TAggregate : IEventSourcedAggregate<TId>
+    {
+        return Store<TAggregate, TId>(
+            aggregate,
+            new ExpectedStreamVersion(aggregate.OriginalVersion),
+            cancellationToken);
     }
 }

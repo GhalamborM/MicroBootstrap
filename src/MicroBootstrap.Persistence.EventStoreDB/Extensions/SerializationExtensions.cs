@@ -20,7 +20,7 @@ public static class SerializationExtensions
     public static object Deserialize(this ResolvedEvent resolvedEvent)
     {
         // get type
-        var eventType = EventTypeMapper.ToType(resolvedEvent.Event.EventType);
+        var eventType = TypeMapper.GetType(resolvedEvent.Event.EventType);
 
         // deserialize event
         return JsonConvert.DeserializeObject(
@@ -32,7 +32,7 @@ public static class SerializationExtensions
     public static EventData ToJsonEventData(this IStreamEvent @event)
         => new(
             Uuid.NewUuid(),
-            EventTypeMapper.ToName(@event.GetType()),
+            TypeMapper.GetTypeName(@event.GetType()),
             Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event.Data, _serializerSettings)),
             Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event.Metadata ?? new object(), _serializerSettings))
         );
@@ -43,7 +43,7 @@ public static class SerializationExtensions
     public static EventData ToJsonEventData(this IDomainEvent @event, IStreamEventMetadata? metadata = null)
         => new(
             Uuid.NewUuid(),
-            EventTypeMapper.ToName(@event.GetType()),
+            TypeMapper.GetTypeName(@event.GetType()),
             Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event, _serializerSettings)),
             Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(metadata ?? new object(), _serializerSettings))
         );

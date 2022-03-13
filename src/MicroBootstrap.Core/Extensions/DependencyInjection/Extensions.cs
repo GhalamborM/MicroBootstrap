@@ -75,7 +75,7 @@ public static class Extensions
     {
         services.Scan(scan => scan
             .FromAssemblies(assembliesToScan)
-            .AddClasses(classes => classes.AssignableTo<IReadProjection>()) // Filter classes
+            .AddClasses(classes => classes.AssignableTo<IHaveReadProjection>()) // Filter classes
             .AsImplementedInterfaces()
             .WithTransientLifetime());
     }

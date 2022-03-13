@@ -17,7 +17,7 @@ public class ReadProjectionPublisher : IReadProjectionPublisher
         where T : IDomainEvent
     {
         using var scope = _serviceProvider.CreateScope();
-        var projections = scope.ServiceProvider.GetRequiredService<IEnumerable<IReadProjection>>();
+        var projections = scope.ServiceProvider.GetRequiredService<IEnumerable<IHaveReadProjection>>();
         foreach (var projection in projections)
         {
             await projection.ProjectAsync(streamEvent, cancellationToken);

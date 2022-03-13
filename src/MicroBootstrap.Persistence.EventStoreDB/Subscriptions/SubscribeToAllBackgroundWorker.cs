@@ -198,7 +198,7 @@ public class EventStoreDBSubscriptionToAll : BackgroundService
 
     private bool IsCheckpointEvent(ResolvedEvent resolvedEvent)
     {
-        if (resolvedEvent.Event.EventType != EventTypeMapper.ToName<CheckpointStored>()) return false;
+        if (resolvedEvent.Event.EventType != TypeMapper.GetTypeName<CheckpointStored>()) return false;
 
         _logger.LogInformation("Checkpoint event - ignoring");
         return true;

@@ -27,7 +27,8 @@ public class DependencyInjectionsTests
         Provider.GetService<IEventStore>().Should().NotBeNull();
         Provider.GetService<IEventStore>().Should().BeOfType<InMemoryEventStore>();
     }
-
+	
+    //https://www.thecodebuzz.com/read-appsettings-json-in-net-core-test-project-xunit-mstest/
     //https://weblog.west-wind.com/posts/2018/Feb/18/Accessing-Configuration-in-NET-Core-Test-Projects
     private static IConfiguration InitConfiguration()
     {

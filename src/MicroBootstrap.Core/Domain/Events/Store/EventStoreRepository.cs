@@ -25,13 +25,13 @@ public class EventStoreRepository : IEventStoreRepository
 
         var streamName = StreamName.For<TAggregate, TId>(aggregateId);
 
-        var aggregate = AggregateFactory<TAggregate>.CreateAggregate();
+        var defaultAggregateState = AggregateFactory<TAggregate>.CreateAggregate();
 
         var result = await _eventStore.AggregateStreamAsync<TAggregate, TId>(
             streamName,
             StreamReadPosition.Start,
-            () => aggregate,
-            aggregate.Fold,
+            defaultAggregateState,
+            defaultAggregateState.Fold,
             cancellationToken);
 
         return result;
@@ -61,7 +61,9 @@ public class EventStoreRepository : IEventStoreRepository
 
         var result = await _eventStore.AppendEventsAsync(
             streamName,
-            events.Select(x => x.ToStreamEvent()).ToImmutableList(),
+            events.Select(
+                    x => x.ToStreamEvent(new StreamEventMetadata(x.EventId.ToString(), x.AggregateSequenceNumber)))
+                .ToImmutableList(),
             version,
             cancellationToken);
 

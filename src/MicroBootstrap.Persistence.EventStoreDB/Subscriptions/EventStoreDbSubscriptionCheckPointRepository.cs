@@ -34,7 +34,7 @@ public class EventStoreDbSubscriptionCheckPointRepository : ISubscriptionCheckpo
 
         ResolvedEvent? @event = await result.FirstOrDefaultAsync(ct);
 
-        return @event?.Deserialize<CheckpointStored>().Position;
+        return @event?.DeserializeData<CheckpointStored>().Position;
     }
 
     public async ValueTask Store(string subscriptionId, ulong position, CancellationToken ct)

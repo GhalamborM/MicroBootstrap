@@ -1,5 +1,6 @@
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Core.Extensions.Utils.Reflections;
 
 namespace MicroBootstrap.Core.Domain.Events.Store.Extensions;
 
@@ -7,9 +8,12 @@ public static class StreamEventExtensions
 {
     public static IStreamEvent ToStreamEvent(
         this IDomainEvent domainEvent,
-        IStreamEventMetadata? metadata = null)
+        IStreamEventMetadata metadata)
     {
-        var type = typeof(StreamEvent<>).MakeGenericType(domainEvent.GetType());
-        return (StreamEvent)Activator.CreateInstance(type, domainEvent, metadata)!;
+        return ReflectionHelpers.CreateGenericType(
+            typeof(StreamEvent<>),
+            new[] { domainEvent.GetType() },
+            domainEvent,
+            metadata);
     }
 }

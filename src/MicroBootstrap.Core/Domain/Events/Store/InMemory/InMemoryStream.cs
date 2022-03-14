@@ -4,7 +4,7 @@ namespace MicroBootstrap.Core.Domain.Events.Store.InMemory;
 
 public class InMemoryStream
 {
-    private readonly List<dynamic> _events = new();
+    private readonly List<InMemoryStreamEvent> _events = new();
 
     public InMemoryStream(string name)
         => StreamName = name;
@@ -15,39 +15,49 @@ public class InMemoryStream
 
     public void CheckVersion(ExpectedStreamVersion expectedVersion)
     {
+        if ((expectedVersion.Value == ExpectedStreamVersion.NoStream.Value && _events.Any() == false) ||
+            expectedVersion.Value == ExpectedStreamVersion.Any.Value)
+            return;
         if (expectedVersion.Value != Version)
             throw new System.Exception($"Wrong stream version. Expected {expectedVersion.Value}, actual {Version}");
     }
 
     public void AppendEvents(
         ExpectedStreamVersion expectedVersion,
-        IReadOnlyCollection<IStreamEvent> events)
+        int globalAllPosition,
+        IReadOnlyCollection<InMemoryStreamEvent> events)
     {
         CheckVersion(expectedVersion);
 
-        foreach (var streamEvent in events)
+        foreach (var @event in events)
         {
-            _events.Add(new InMemoryEvent(streamEvent, ++Version));
+            var version = ++Version;
+            @event.Name = $"{version}@{StreamName}";
+            @event.CreatedTime = DateTime.Now;
+            @event.EventNumber = version;
+            @event.EventPosition = globalAllPosition + 1;
         }
+
+        _events.AddRange(events);
     }
 
-    public IEnumerable<IStreamEvent> GetEvents(StreamReadPosition from, long count)
+    public IEnumerable<InMemoryStreamEvent> GetEvents(StreamReadPosition from, int count)
     {
         var selected = _events
-            .SkipWhile(x => x.Position < from.Value);
+            .SkipWhile(x => x.EventPosition < from.Value);
 
-        if (count > 0) selected = selected.Take((int)count);
+        if (count > 0) selected = selected.Take(count);
 
-        return selected.Select(x => new StreamEvent(x.Data, x.Metadata));
+        return selected;
     }
 
-    public IEnumerable<StreamEvent> GetEventsBackwards(int count)
+    public IEnumerable<InMemoryStreamEvent> GetEventsBackwards(int count)
     {
         var position = _events.Count - 1;
 
         while (count-- > 0)
         {
-            yield return _events[position--].Event;
+            yield return _events[position--];
         }
     }
 }

@@ -1,5 +1,5 @@
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
-using MicroBootstrap.Core.Extensions.DependencyInjection;
+using MicroBootstrap.Persistence.EventStoreDB.Extensions;
 using MicroBootstrap.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -15,13 +15,12 @@ public class IntegrationFixture: IAsyncLifetime
         var services = new ServiceCollection();
         var configuration = ConfigurationHelper.BuildConfiguration();
 
-        services.AddCore(configuration);
+        services.AddEventStoreDb(configuration);
 
         _provider = services.BuildServiceProvider();
     }
 
     public IEventStore EventStore => _provider.GetRequiredService<IEventStore>();
-    public IEventStoreRepository EventStoreRepository => _provider.GetRequiredService<IEventStoreRepository>();
 
     public Task InitializeAsync()
     {

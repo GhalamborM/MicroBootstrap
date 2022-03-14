@@ -1,5 +1,6 @@
 using EventStore.Client;
 using MicroBootstrap.Core.Extensions.Configuration;
+using MicroBootstrap.Core.Extensions.DependencyInjection;
 using MicroBootstrap.Persistence.EventStoreDB.Subscriptions;
 using Microsoft.Extensions.Configuration;
 
@@ -7,7 +8,7 @@ namespace MicroBootstrap.Persistence.EventStoreDB.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddEventStore(
+    public static IServiceCollection AddEventStoreDb(
         this IServiceCollection services,
         IConfiguration configuration,
         Action<EventStoreDbOptions>? configureOptions = null)
@@ -16,6 +17,8 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(
             new EventStoreClient(EventStoreClientSettings.Create(eventStoreDbConfig.ConnectionString)));
+
+        services.AddEventStore<EventStoreDbEventStore>(ServiceLifetime.Scoped);
 
         if (eventStoreDbConfig.UseInternalCheckpointing)
         {

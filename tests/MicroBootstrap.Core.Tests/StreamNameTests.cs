@@ -1,7 +1,7 @@
 using FluentAssertions;
-using MicroBootstrap.Core.Domain.Events.Store;
 using MicroBootstrap.Core.Domain.Model;
 using MicroBootstrap.Core.Domain.Model.EventSourcing;
+using MicroBootstrap.Core.Persistence.EventStore;
 using Xunit;
 
 namespace MicroBootstrap.Core.Tests;

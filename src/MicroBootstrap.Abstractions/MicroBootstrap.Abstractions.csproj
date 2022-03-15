@@ -1,11 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <!--https://github.com/dotnet/aspnetcore/issues/19481-->
     <!--https://docs.microsoft.com/en-us/aspnet/core/fundamentals/metapackage-app-->

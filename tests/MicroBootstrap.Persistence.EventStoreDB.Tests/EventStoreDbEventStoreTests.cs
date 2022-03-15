@@ -3,9 +3,9 @@ using FluentAssertions;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Core.Domain;
 using MicroBootstrap.Core.Domain.Events.Internal;
-using MicroBootstrap.Core.Domain.Events.Store;
-using MicroBootstrap.Core.Domain.Events.Store.Extensions;
 using MicroBootstrap.Core.Domain.Model.EventSourcing;
+using MicroBootstrap.Core.Persistence.EventStore;
+using MicroBootstrap.Core.Persistence.EventStore.Extensions;
 using MicroBootstrap.Core.Tests.Fixtures;
 using Xunit;
 

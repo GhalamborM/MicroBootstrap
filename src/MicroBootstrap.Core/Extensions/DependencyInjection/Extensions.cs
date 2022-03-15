@@ -5,13 +5,20 @@ using MicroBootstrap.Abstractions.Core.Domain.Events.External;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
+using MicroBootstrap.Abstractions.Messaging;
+using MicroBootstrap.Abstractions.Messaging.Serialization;
+using MicroBootstrap.Abstractions.Messaging.Transport;
 using MicroBootstrap.Abstractions.Types;
 using MicroBootstrap.Core.Domain.Events;
-using MicroBootstrap.Core.Domain.Events.Store;
-using MicroBootstrap.Core.Domain.Events.Store.InMemory;
 using MicroBootstrap.Core.Extensions.Registration;
+using MicroBootstrap.Core.Extensions.Utils.Reflections;
 using MicroBootstrap.Core.IdsGenerator;
+using MicroBootstrap.Core.Persistence.EventStore;
+using MicroBootstrap.Core.Persistence.EventStore.InMemory;
+using MicroBootstrap.Core.Serialization.Newtonsoft;
 using MicroBootstrap.Core.Types;
+using MicroBootstrap.Messaging;
+using MicroBootstrap.Messaging.BackgroundServices;
 using Microsoft.Extensions.Configuration;
 
 namespace MicroBootstrap.Core.Extensions.DependencyInjection;
@@ -36,6 +43,9 @@ public static class Extensions
 
         AddEventStore<InMemoryEventStore>(services, ServiceLifetime.Singleton);
 
+        AddDefaultMessageSerializer(services, ServiceLifetime.Transient);
+
+        AddMessagingCore(services, configuration);
         switch (configuration["IdGenerator:Type"])
         {
             case "Guid":
@@ -51,9 +61,75 @@ public static class Extensions
         return services;
     }
 
+    public static IServiceCollection AddMessagingCore(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddScoped<IMessageDispatcher, MessageDispatcher>();
+        services.AddHostedService<SubscribersBackgroundService>();
+        services.AddHostedService<ConsumerBackgroundWorker>();
+        services.AddHostedService<OutboxProcessorBackgroundService>();
+
+        var typeResolver = new TypeResolver();
+        services.AddSingleton<ITypeResolver>(typeResolver);
+        RegisterIntegrationMessagesToTypeResolver(typeResolver);
+
+        return services;
+    }
+
+    private static void RegisterIntegrationMessagesToTypeResolver(
+        ITypeResolver typeResolver)
+    {
+        Console.WriteLine("preloading all message types...");
+
+        var messageType = typeof(IIntegrationEvent);
+
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var types = assemblies.SelectMany(x => x.GetTypes())
+            .Where(type =>
+                messageType.IsAssignableFrom(type) && type.IsInterface == false && type.IsAbstract == false)
+            .Distinct()
+            .ToList();
+
+        typeResolver.Register(types);
+
+        Console.WriteLine("preloading all message types completed!");
+    }
+
+    public static IEnumerable<Type> GetHandledMessageTypes(params Assembly[] assemblies)
+    {
+        var messageHandlerTypes = typeof(IMessageHandler<>).GetAllTypesImplementingOpenGenericInterface(assemblies)
+            .ToList();
+
+        var inheritsTypes = messageHandlerTypes.SelectMany(x => x.GetInterfaces())
+            .Where(x => x.GetInterfaces().Any(i => i.IsGenericType) &&
+                        x.GetGenericTypeDefinition() == typeof(IMessageHandler<>));
+
+        foreach (var inheritsType in inheritsTypes)
+        {
+            var messageType = inheritsType.GetGenericArguments().First();
+            if (messageType.IsAssignableTo(typeof(IMessage)))
+            {
+                yield return messageType;
+            }
+        }
+    }
+
+    public static IServiceCollection AddBusSubscriber(this IServiceCollection services, Type subscriberType)
+    {
+        if (services.All(s => s.ImplementationType != subscriberType))
+            services.AddSingleton(typeof(IEventBusSubscriber), subscriberType);
+        return services;
+    }
+
+    private static void AddDefaultMessageSerializer(IServiceCollection services, ServiceLifetime lifetime)
+    {
+        services.Add<IMessageSerializer, NewtonsoftJsonMessageSerializer>(lifetime);
+    }
+
     public static IServiceCollection AddEventStore<TEventStore>(
         this IServiceCollection services,
-        ServiceLifetime withLifetime = ServiceLifetime.Transient)
+        ServiceLifetime withLifetime = ServiceLifetime.Scoped)
         where TEventStore : class, IEventStore
     {
         services.Add<IEventStoreRepository, EventStoreRepository>(withLifetime);

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MicroBootstrap.CQRS\MicroBootstrap.CQRS.csproj" />
+    <ProjectReference Include="..\..\src\MicroBootstrap.Messaging.Postgres\MicroBootstrap.Messaging.Postgres.csproj" />
+    <ProjectReference Include="..\..\src\MicroBootstrap.Messaging.Transport.InMemory\MicroBootstrap.Messaging.Transport.InMemory.csproj" />
+    <ProjectReference Include="..\..\src\MicroBootstrap.Persistence.Marten\MicroBootstrap.Persistence.Marten.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Tests.Shared\MicroBootstrap.Tests.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.tests.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

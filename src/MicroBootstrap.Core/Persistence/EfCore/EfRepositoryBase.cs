@@ -181,8 +181,6 @@ public abstract class EfRepositoryBase<TDbContext, TEntity, TKey> :
 
         await DbSet.AddAsync(entity, cancellationToken);
 
-        _aggregatesDomainEventsStore.AddEventsFrom(entity);
-
         return entity;
     }
 
@@ -192,8 +190,6 @@ public abstract class EfRepositoryBase<TDbContext, TEntity, TKey> :
 
         var entry = DbContext.Entry(entity);
         entry.State = EntityState.Modified;
-
-        _aggregatesDomainEventsStore.AddEventsFrom(entity);
 
         return Task.FromResult(entry.Entity);
     }
@@ -220,8 +216,6 @@ public abstract class EfRepositoryBase<TDbContext, TEntity, TKey> :
         Guard.Against.Null(entity, nameof(entity));
 
         DbSet.Remove(entity);
-
-        _aggregatesDomainEventsStore.AddEventsFrom(entity);
 
         return Task.CompletedTask;
     }

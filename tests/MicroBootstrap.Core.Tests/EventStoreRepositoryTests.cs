@@ -2,8 +2,6 @@ using System.Collections.Immutable;
 using FluentAssertions;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Core.Domain.Events.Internal;
-using MicroBootstrap.Core.Domain.Events.Store;
-using MicroBootstrap.Core.Domain.Events.Store.Extensions;
 using MicroBootstrap.Core.Domain.Model.EventSourcing;
 using MicroBootstrap.Core.Tests.Fixtures;
 using Xunit;

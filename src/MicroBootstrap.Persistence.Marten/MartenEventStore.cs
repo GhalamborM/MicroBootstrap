@@ -2,6 +2,9 @@ using System.Collections.Immutable;
 using Marten;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
+using MicroBootstrap.Core.Persistence.EventStore;
+using MicroBootstrap.Core.Persistence.EventStore.Extensions;
 
 namespace MicroBootstrap.Persistence.Marten;
 
@@ -14,75 +17,112 @@ public class MartenEventStore : IEventStore
         _documentSession = documentSession;
     }
 
-    public Task Append(
-        Guid streamId,
-        int? version,
-        CancellationToken cancellationToken = default,
-        params IDomainEvent[] events)
+    public Task<bool> StreamExists(string streamId, CancellationToken cancellationToken = default)
     {
-        if (version.HasValue)
-            _documentSession.Events.Append(streamId, version, events.Cast<object>().ToArray());
-        else
-            _documentSession.Events.Append(streamId, events.Cast<object>().ToArray());
-        return Task.CompletedTask;
+        var state = _documentSession.Events.FetchStreamState(streamId);
+
+        return Task.FromResult(state != null);
     }
 
-    public Task Append(Guid streamId, CancellationToken cancellationToken, params IDomainEvent[] events)
+    public async Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
+        string streamId,
+        StreamReadPosition? fromVersion = null,
+        int maxCount = int.MaxValue,
+        CancellationToken cancellationToken = default)
     {
-        return Append(streamId, null, cancellationToken, events);
+        var events = await Filter(streamId, fromVersion?.Value, null)
+            .ToListAsync(cancellationToken);
+
+        // events that we saved are IStreamEvent
+        var streamEvents = events
+            .Select(ev => ev.Data)
+            .OfType<IStreamEvent>()
+            .ToImmutableList();
+
+        return streamEvents;
     }
 
-    public Task<TEntity?> Aggregate<TEntity>(
-        Guid streamId,
-        CancellationToken cancellationToken = default,
-        int version = 0,
-        DateTime? timestamp = null)
-        where TEntity : class, new()
+    public Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
+        string streamId,
+        StreamReadPosition? fromVersion = null,
+        CancellationToken cancellationToken = default)
     {
-        return _documentSession.Events.AggregateStreamAsync<TEntity>(
+        return GetStreamEventsAsync(streamId, fromVersion, int.MaxValue, cancellationToken);
+    }
+
+    public Task<AppendResult> AppendEventAsync(
+        string streamId,
+        IStreamEvent @event,
+        CancellationToken cancellationToken = default)
+    {
+        // storing whole stream event with metadata because there is no way to store metadata separately
+        var result = _documentSession.Events.Append(streamId, @event);
+
+        var nextVersion = _documentSession.Events.FetchStream(streamId).Count;
+
+        return Task.FromResult(new AppendResult(-1, nextVersion));
+    }
+
+    public Task<AppendResult> AppendEventAsync(
+        string streamId,
+        IStreamEvent @event,
+        ExpectedStreamVersion expectedRevision,
+        CancellationToken cancellationToken = default)
+    {
+        return AppendEventsAsync(streamId, new[] { @event }, expectedRevision: expectedRevision, cancellationToken);
+    }
+
+    public Task<AppendResult> AppendEventsAsync(
+        string streamId,
+        IReadOnlyCollection<IStreamEvent> events,
+        ExpectedStreamVersion expectedRevision,
+        CancellationToken cancellationToken = default)
+    {
+        // storing whole stream event with metadata because there is no way to store metadata separately
+        var result = _documentSession.Events.Append(
             streamId,
-            version,
-            timestamp,
+            expectedVersion: expectedRevision.Value,
+            events: events.Cast<object>().ToArray());
+
+        var nextVersion = expectedRevision.Value + events.Count;
+
+        return Task.FromResult(new AppendResult(-1, nextVersion));
+    }
+
+    public Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
+        string streamId,
+        StreamReadPosition fromVersion,
+        TAggregate defaultAggregateState,
+        Action<object> fold,
+        CancellationToken cancellationToken = default)
+        where TAggregate : class, IEventSourcedAggregate<TId>, new()
+    {
+        return _documentSession.Events.AggregateStreamAsync<TAggregate>(
+            streamId,
+            version: fromVersion.Value,
+            null,
             token: cancellationToken);
     }
 
-    public async Task<IReadOnlyList<IDomainEvent>> Query(
-        Guid? streamId = null,
-        CancellationToken cancellationToken = default,
-        int? fromVersion = null,
-        DateTime? fromTimestamp = null)
+    public Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
+        string streamId,
+        TAggregate defaultAggregateState,
+        Action<object> fold,
+        CancellationToken cancellationToken = default)
+        where TAggregate : class, IEventSourcedAggregate<TId>, new()
     {
-        var events = await Filter(streamId, fromVersion, fromTimestamp)
-            .ToListAsync(cancellationToken);
-
-        return events
-            .Select(ev => ev.Data)
-            .OfType<IDomainEvent>()
-            .ToList();
+        return _documentSession.Events.AggregateStreamAsync<TAggregate>(
+            streamId,
+            version: StreamReadPosition.Start.Value,
+            null,
+            token: cancellationToken);
     }
 
-    public async Task<IReadOnlyList<TEvent>> Query<TEvent>(
-        Guid? streamId = null,
-        CancellationToken cancellationToken = default,
-        int? fromVersion = null,
-        DateTime? fromTimestamp = null)
-        where TEvent : class, IDomainEvent
-    {
-        var events = await Filter(streamId, fromVersion, fromTimestamp)
-            .ToListAsync(cancellationToken);
-
-        return events
-            .Select(ev => ev.Data)
-            .OfType<TEvent>()
-            .ToImmutableList();
-    }
-
-    private IQueryable<global::Marten.Events.IEvent> Filter(Guid? streamId, int? version, DateTime? timestamp)
+    private IQueryable<global::Marten.Events.IEvent> Filter(string streamId, long? version, DateTime? timestamp)
     {
         var query = _documentSession.Events.QueryAllRawEvents().AsQueryable();
 
-        if (streamId.HasValue)
-            query = query.Where(ev => ev.StreamId == streamId);
+        query = query.Where(ev => ev.StreamKey == streamId);
 
         if (version.HasValue)
             query = query.Where(ev => ev.Version >= version);
@@ -91,10 +131,5 @@ public class MartenEventStore : IEventStore
             query = query.Where(ev => ev.Timestamp >= timestamp);
 
         return query;
-    }
-
-    public Task SaveChanges(CancellationToken token = default)
-    {
-        return _documentSession.SaveChangesAsync(token);
     }
 }

@@ -12,11 +12,6 @@ public class MartenDomainEventAccessor : IDomainEventsAccessor
         _aggregatesDomainEventsStore = aggregatesDomainEventsStore;
     }
 
-    public IReadOnlyList<IDomainEvent> UnCommittedDomainEvents
-    {
-        get
-        {
-            return _aggregatesDomainEventsStore.GetAllUncommittedEvents();
-        }
-    }
+    public IReadOnlyList<IDomainEvent> UnCommittedDomainEvents =>
+        _aggregatesDomainEventsStore.GetAllUncommittedEvents();
 }

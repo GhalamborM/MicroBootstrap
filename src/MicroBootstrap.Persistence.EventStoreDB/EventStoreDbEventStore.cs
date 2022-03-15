@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using EventStore.Client;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 using MicroBootstrap.Persistence.EventStoreDB.Extensions;
@@ -10,10 +11,12 @@ namespace MicroBootstrap.Persistence.EventStoreDB;
 public class EventStoreDbEventStore : IEventStore
 {
     private readonly EventStoreClient _grpcClient;
+    private readonly IDomainEventPublisher _domainEventPublisher;
 
-    public EventStoreDbEventStore(EventStoreClient grpcClient)
+    public EventStoreDbEventStore(EventStoreClient grpcClient, IDomainEventPublisher domainEventPublisher)
     {
         _grpcClient = grpcClient;
+        _domainEventPublisher = domainEventPublisher;
     }
 
     public async Task<bool> StreamExists(string streamId, CancellationToken cancellationToken = default)
@@ -129,13 +132,13 @@ public class EventStoreDbEventStore : IEventStore
         }
     }
 
-    public async Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
+    public async Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         StreamReadPosition fromVersion,
         TAggregate defaultAggregateState,
         Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>, new()
+        where TAggregate : class, IEventSourcedAggregate<TId>, new()
     {
         var readResult = _grpcClient.ReadStreamAsync(
             Direction.Forwards,
@@ -158,12 +161,12 @@ public class EventStoreDbEventStore : IEventStore
             );
     }
 
-    public Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
+    public Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         TAggregate defaultAggregateState,
         Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>, new()
+        where TAggregate : class, IEventSourcedAggregate<TId>, new()
     {
         return AggregateStreamAsync<TAggregate, TId>(
             streamId,

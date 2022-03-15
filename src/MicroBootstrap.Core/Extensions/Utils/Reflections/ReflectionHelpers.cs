@@ -5,13 +5,13 @@ namespace MicroBootstrap.Core.Extensions.Utils.Reflections;
 
 public static class ReflectionHelpers
 {
-    public static dynamic CreateGenericType(Type genericType, Type[] typeArguments, params object[] constructorArgs)
+    public static dynamic CreateGenericType(Type genericType, Type[] typeArguments, params object?[] constructorArgs)
     {
         var type = genericType.MakeGenericType(typeArguments);
         return Activator.CreateInstance(type, constructorArgs);
     }
 
-    public static dynamic CreateGenericType<TGenericType>(Type[] typeArguments, params object[] constructorArgs)
+    public static dynamic CreateGenericType<TGenericType>(Type[] typeArguments, params object?[] constructorArgs)
     {
         return CreateGenericType(typeof(TGenericType), typeArguments, constructorArgs);
     }

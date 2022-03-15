@@ -76,8 +76,6 @@ public class MartenDocumentRepository<TEntity, TKey> : IRepository<TEntity, TKey
 
         _documentSession.Insert(entity);
 
-        _aggregatesDomainEventsStore.AddEventsFrom(entity);
-
         return Task.FromResult(entity);
     }
 
@@ -86,8 +84,6 @@ public class MartenDocumentRepository<TEntity, TKey> : IRepository<TEntity, TKey
         Guard.Against.Null(entity, nameof(entity));
 
         _documentSession.Update(entity);
-
-        _aggregatesDomainEventsStore.AddEventsFrom(entity);
 
         return Task.FromResult(entity);
     }
@@ -116,8 +112,6 @@ public class MartenDocumentRepository<TEntity, TKey> : IRepository<TEntity, TKey
         Guard.Against.Null(entity, nameof(entity));
 
         _documentSession.Delete(entity);
-
-        _aggregatesDomainEventsStore.AddEventsFrom(entity);
 
         return Task.FromResult(entity);
     }

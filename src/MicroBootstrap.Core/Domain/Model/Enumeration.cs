@@ -1,4 +1,4 @@
-namespace MicroBootstrap.Abstractions.Domain.Model;
+namespace MicroBootstrap.Core.Domain.Model;
 
 /// <summary>
 /// Enumeration class based on https://lostechies.com/jimmybogard/2008/08/12/enumeration-classes/

@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Model;
-using MicroBootstrap.Abstractions.Domain.Model;
 using MicroBootstrap.Abstractions.Persistence;
 using MicroBootstrap.Abstractions.Persistence.EfCore;
 using Microsoft.EntityFrameworkCore;

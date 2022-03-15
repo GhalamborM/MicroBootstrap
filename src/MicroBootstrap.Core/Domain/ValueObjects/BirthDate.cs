@@ -1,6 +1,6 @@
-using MicroBootstrap.Abstractions.Domain.Exceptions;
+using MicroBootstrap.Core.Domain.Exceptions;
 
-namespace MicroBootstrap.Abstractions.Domain.ValueObjects;
+namespace MicroBootstrap.Core.Domain.ValueObjects;
 
 public record BirthDate
 {

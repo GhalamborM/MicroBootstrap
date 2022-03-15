@@ -1,4 +1,4 @@
-namespace MicroBootstrap.Abstractions.Domain.Exceptions;
+namespace MicroBootstrap.Core.Domain.Exceptions;
 
 public class ConcurrencyException<TId> : DomainException
 {

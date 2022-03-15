@@ -1,6 +1,6 @@
 using MicroBootstrap.Abstractions.Core.Domain.Model;
 
-namespace MicroBootstrap.Abstractions.Domain.Model;
+namespace MicroBootstrap.Core.Domain.Model;
 
 public class AuditableEntity<TId> : Entity<TId>, IAuditableEntity<TId>
 {

@@ -1,6 +1,6 @@
 using FluentAssertions;
-using MicroBootstrap.Abstractions.Domain.Model;
 using MicroBootstrap.Core.Domain.Events.Internal;
+using MicroBootstrap.Core.Domain.Model;
 using Xunit;
 
 namespace MicroBootstrap.Core.Tests;

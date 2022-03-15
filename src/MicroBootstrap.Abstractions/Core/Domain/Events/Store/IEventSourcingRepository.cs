@@ -18,7 +18,7 @@ public interface IEventStoreRepository
         where TAggregate : IEventSourcedAggregate<TId>, new();
 
     /// <summary>
-    /// Store an aggregate state to the store with using some events.
+    /// Store an aggregate state to the store with using some events (use for updating, adding and deleting).
     /// </summary>
     /// <typeparam name="TAggregate">Type of aggregate.</typeparam>
     /// <typeparam name="TId">Type of Id.</typeparam>
@@ -33,7 +33,7 @@ public interface IEventStoreRepository
         where TAggregate : IEventSourcedAggregate<TId>;
 
     /// <summary>
-    /// Store an aggregate state to the store with using some events.
+    /// Store an aggregate state to the store with using some events (use for updating, adding and deleting).
     /// </summary>
     /// <typeparam name="TAggregate">Type of aggregate.</typeparam>
     /// <typeparam name="TId">Type of Id.</typeparam>
@@ -43,5 +43,16 @@ public interface IEventStoreRepository
     public Task Store<TAggregate, TId>(
         TAggregate aggregate,
         CancellationToken cancellationToken = default)
+        where TAggregate : IEventSourcedAggregate<TId>;
+
+    /// <summary>
+    /// Check if aggregate exists in the store.
+    /// </summary>
+    /// <param name="aggregateId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TAggregate"></typeparam>
+    /// <typeparam name="TId"></typeparam>
+    /// <returns></returns>
+    Task<bool> Exists<TAggregate, TId>(TId aggregateId, CancellationToken cancellationToken = default)
         where TAggregate : IEventSourcedAggregate<TId>;
 }

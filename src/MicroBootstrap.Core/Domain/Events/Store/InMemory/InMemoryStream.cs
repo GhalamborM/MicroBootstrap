@@ -4,7 +4,7 @@ namespace MicroBootstrap.Core.Domain.Events.Store.InMemory;
 
 public class InMemoryStream
 {
-    private readonly List<InMemoryStreamEvent> _events = new();
+    private readonly List<StreamEventData> _events = new();
 
     public InMemoryStream(string name)
         => StreamName = name;
@@ -25,7 +25,7 @@ public class InMemoryStream
     public void AppendEvents(
         ExpectedStreamVersion expectedVersion,
         int globalAllPosition,
-        IReadOnlyCollection<InMemoryStreamEvent> events)
+        IReadOnlyCollection<StreamEventData> events)
     {
         CheckVersion(expectedVersion);
 
@@ -41,7 +41,7 @@ public class InMemoryStream
         _events.AddRange(events);
     }
 
-    public IEnumerable<InMemoryStreamEvent> GetEvents(StreamReadPosition from, int count)
+    public IEnumerable<StreamEventData> GetEvents(StreamReadPosition from, int count)
     {
         var selected = _events
             .SkipWhile(x => x.EventPosition < from.Value);
@@ -51,7 +51,7 @@ public class InMemoryStream
         return selected;
     }
 
-    public IEnumerable<InMemoryStreamEvent> GetEventsBackwards(int count)
+    public IEnumerable<StreamEventData> GetEventsBackwards(int count)
     {
         var position = _events.Count - 1;
 

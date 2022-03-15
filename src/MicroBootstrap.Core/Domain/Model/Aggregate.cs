@@ -3,9 +3,9 @@ using System.Collections.Immutable;
 using MicroBootstrap.Abstractions.Core.Domain;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Model;
-using MicroBootstrap.Abstractions.Domain.Exceptions;
+using MicroBootstrap.Core.Domain.Exceptions;
 
-namespace MicroBootstrap.Abstractions.Domain.Model;
+namespace MicroBootstrap.Core.Domain.Model;
 
 public abstract class Aggregate<TId> : Entity<TId>, IAggregate<TId>
 {

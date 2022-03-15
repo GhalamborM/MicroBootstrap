@@ -1,13 +1,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using System.Reflection;
 using MicroBootstrap.Abstractions.Core.Domain;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
-using MicroBootstrap.Abstractions.Domain.Exceptions;
+using MicroBootstrap.Core.Domain.Exceptions;
 using MicroBootstrap.Core.Extensions.Utils.Reflections;
 
-namespace MicroBootstrap.Abstractions.Domain.Model.EventSourcing;
+namespace MicroBootstrap.Core.Domain.Model.EventSourcing;
 
 public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TId>
 {

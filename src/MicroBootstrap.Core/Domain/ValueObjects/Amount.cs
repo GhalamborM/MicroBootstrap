@@ -1,7 +1,7 @@
 using Ardalis.GuardClauses;
 using MicroBootstrap.Core.Exception.Types;
 
-namespace MicroBootstrap.Abstractions.Domain.ValueObjects;
+namespace MicroBootstrap.Core.Domain.ValueObjects;
 
 public record Amount
 {

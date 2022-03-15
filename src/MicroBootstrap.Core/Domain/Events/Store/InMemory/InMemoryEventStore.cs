@@ -1,13 +1,13 @@
-using System.Collections.Immutable;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
+using MicroBootstrap.Core.Domain.Events.Store.Extensions;
 
 namespace MicroBootstrap.Core.Domain.Events.Store.InMemory;
 
 public class InMemoryEventStore : IEventStore
 {
     private readonly Dictionary<string, InMemoryStream> _storage = new();
-    private readonly List<InMemoryStreamEvent> _global = new();
+    private readonly List<StreamEventData> _global = new();
 
     public Task<bool> StreamExists(string streamId, CancellationToken cancellationToken = default)
     {
@@ -62,7 +62,7 @@ public class InMemoryEventStore : IEventStore
             _storage.Add(streamId, existing);
         }
 
-        var inMemoryEvents = events.Select(x => x.ToJsonEventData()).ToList();
+        var inMemoryEvents = events.Select(x => x.ToJsonStreamEventData()).ToList();
 
         existing.AppendEvents(expectedRevision, _global.Count - 1, inMemoryEvents);
 

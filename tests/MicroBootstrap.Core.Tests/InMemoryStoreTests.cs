@@ -1,11 +1,11 @@
 using System.Collections.Immutable;
 using FluentAssertions;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
-using MicroBootstrap.Abstractions.Domain.Model.EventSourcing;
 using MicroBootstrap.Core.Domain;
 using MicroBootstrap.Core.Domain.Events.Internal;
 using MicroBootstrap.Core.Domain.Events.Store;
 using MicroBootstrap.Core.Domain.Events.Store.Extensions;
+using MicroBootstrap.Core.Domain.Model.EventSourcing;
 using MicroBootstrap.Core.Tests.Fixtures;
 using Xunit;
 
@@ -23,17 +23,7 @@ public class InMemoryStoreTests : IClassFixture<IntegrationFixture>
     [Fact]
     public async Task exist_stream_should_return_true_for_existing_stream()
     {
-        var shoppingCart = ShoppingCart.Create(Guid.NewGuid());
-        var streamId = StreamName.For<ShoppingCart, Guid>(shoppingCart.Id);
-
-        var events = shoppingCart.FlushUncommittedEvents().Select(x =>
-                x.ToStreamEvent(new StreamEventMetadata(x.EventId.ToString(), x.AggregateSequenceNumber)))
-            .ToImmutableList();
-
-        var appendResult = await _integrationFixture.EventStore.AppendEventsAsync(
-            streamId,
-            events,
-            new ExpectedStreamVersion(shoppingCart.OriginalVersion));
+        var (streamId, _) = await AddInitItemToStore();
 
         var exists = await _integrationFixture.EventStore.StreamExists(streamId);
 
@@ -77,7 +67,7 @@ public class InMemoryStoreTests : IClassFixture<IntegrationFixture>
     [Fact]
     public async Task append_single_to_existing_stream_and_get_stream_events_with_version_should_return_correct_events()
     {
-        var streamId = await AddInitItemToStore();
+        var (streamId, _) = await AddInitItemToStore();
 
         var defaultAggregateState = AggregateFactory<ShoppingCart>.CreateAggregate();
 
@@ -122,44 +112,10 @@ public class InMemoryStoreTests : IClassFixture<IntegrationFixture>
         aggregate.CurrentVersion.Should().Be(2);
     }
 
-    private async Task<StreamName> AddInitItemToStore()
-    {
-        var shoppingCart = ShoppingCart.Create(Guid.NewGuid());
-        shoppingCart.AddItem(Guid.NewGuid());
-
-        var streamId = StreamName.For<ShoppingCart, Guid>(shoppingCart.Id);
-
-        var uncommittedEvents = shoppingCart.FlushUncommittedEvents();
-
-        var streamEvents = uncommittedEvents
-            .Select(x => x.ToStreamEvent(new StreamEventMetadata(x.EventId.ToString(), x.AggregateSequenceNumber)))
-            .ToImmutableList();
-
-        var appendResult = await _integrationFixture.EventStore.AppendEventsAsync(
-            streamId,
-            streamEvents,
-            new ExpectedStreamVersion(shoppingCart.OriginalVersion));
-
-        return streamId;
-    }
-
     [Fact]
     public async Task aggregate_stream_should_return_correct_aggregate()
     {
-        var shoppingCart = ShoppingCart.Create(Guid.NewGuid());
-        shoppingCart.AddItem(Guid.NewGuid());
-        var streamId = StreamName.For<ShoppingCart, Guid>(shoppingCart.Id);
-
-        var uncommittedEvents = shoppingCart.FlushUncommittedEvents();
-
-        var streamEvents = uncommittedEvents
-            .Select(x => x.ToStreamEvent(new StreamEventMetadata(x.EventId.ToString(), x.AggregateSequenceNumber)))
-            .ToImmutableList();
-
-        var appendResult = await _integrationFixture.EventStore.AppendEventsAsync(
-            streamId,
-            streamEvents,
-            new ExpectedStreamVersion(shoppingCart.OriginalVersion));
+        var (streamId, shoppingCart) = await AddInitItemToStore();
 
         var defaultAggregateState = AggregateFactory<ShoppingCart>.CreateAggregate();
 
@@ -178,15 +134,25 @@ public class InMemoryStoreTests : IClassFixture<IntegrationFixture>
         aggregate.CurrentVersion.Should().Be(1);
     }
 
-    private ShoppingCart InitShoppingCart()
+    private async Task<(StreamName streamName, ShoppingCart shoppingCart)> AddInitItemToStore()
     {
         var shoppingCart = ShoppingCart.Create(Guid.NewGuid());
+        shoppingCart.AddItem(Guid.NewGuid());
 
-        Enumerable.Range(1, 100)
-            .ToList()
-            .ForEach(_ => shoppingCart.AddItem(Guid.NewGuid()));
+        var streamId = StreamName.For<ShoppingCart, Guid>(shoppingCart.Id);
 
-        return shoppingCart;
+        var uncommittedEvents = shoppingCart.FlushUncommittedEvents();
+
+        var streamEvents = uncommittedEvents
+            .Select(x => x.ToStreamEvent(new StreamEventMetadata(x.EventId.ToString(), x.AggregateSequenceNumber)))
+            .ToImmutableList();
+
+        var appendResult = await _integrationFixture.EventStore.AppendEventsAsync(
+            streamId,
+            streamEvents,
+            new ExpectedStreamVersion(shoppingCart.OriginalVersion));
+
+        return (streamId, shoppingCart);
     }
 
     private record ShoppingCartInitialized(Guid ShoppingCartId, Guid ClientId) : DomainEvent;

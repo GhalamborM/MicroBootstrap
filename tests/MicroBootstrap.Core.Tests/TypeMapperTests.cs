@@ -11,6 +11,8 @@ public class TypeMapperTests
     public void get_type_name_should_return_correct_name()
     {
         TypeMapper.GetTypeName<OrderCreated>().Should().Be(typeof(OrderCreated).FullName!.Replace(".", "_"));
+        TypeMapper.GetTypeName(typeof(OrderCreated)).Should().Be(typeof(OrderCreated).FullName!.Replace(".", "_"));
+        TypeMapper.GetTypeNameByObject(new OrderCreated()).Should().Be(typeof(OrderCreated).FullName!.Replace(".", "_"));
     }
 
     [Fact]

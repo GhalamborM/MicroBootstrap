@@ -22,7 +22,7 @@ public static class EventStoreDBExtensions
         );
 
         return (await readResult
-            .Select(@event => @event.Deserialize()!)
+            .Select(@event => @event.DeserializeData()!)
             .AggregateAsync(
                 getDefault(),
                 when,
@@ -83,7 +83,7 @@ public static class EventStoreDBExtensions
 
         await foreach (var @event in readResult)
         {
-            var eventData = @event.Deserialize();
+            var eventData = @event.DeserializeData();
 
             aggregate.When(eventData!);
         }

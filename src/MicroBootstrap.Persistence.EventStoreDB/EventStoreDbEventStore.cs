@@ -1,7 +1,7 @@
+using System.Collections.Immutable;
 using EventStore.Client;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
-using MicroBootstrap.Core.Domain;
 using MicroBootstrap.Persistence.EventStoreDB.Extensions;
 
 namespace MicroBootstrap.Persistence.EventStoreDB;
@@ -16,10 +16,24 @@ public class EventStoreDbEventStore : IEventStore
         _grpcClient = grpcClient;
     }
 
+    public async Task<bool> StreamExists(string streamId, CancellationToken cancellationToken = default)
+    {
+        var read = _grpcClient.ReadStreamAsync(
+            Direction.Forwards,
+            streamId,
+            StreamPosition.Start,
+            1,
+            cancellationToken: cancellationToken
+        );
+
+        var state = await read.ReadState;
+        return state == ReadState.Ok;
+    }
+
     public async Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
         string streamId,
         StreamReadPosition? fromVersion = null,
-        long maxCount = long.MaxValue,
+        int maxCount = int.MaxValue,
         CancellationToken cancellationToken = default)
     {
         var readResult = _grpcClient.ReadStreamAsync(
@@ -40,70 +54,32 @@ public class EventStoreDbEventStore : IEventStore
         StreamReadPosition? fromVersion = null,
         CancellationToken cancellationToken = default)
     {
-        return GetStreamEventsAsync(streamId, fromVersion, long.MaxValue, cancellationToken);
+        return GetStreamEventsAsync(streamId, fromVersion, int.MaxValue, cancellationToken);
     }
 
-    public async Task<AppendResult> AppendEventAsync(
+    public Task<AppendResult> AppendEventAsync(
         string streamId,
         IStreamEvent @event,
         CancellationToken cancellationToken = default)
     {
-        EventData eventData = @event.ToJsonEventData();
-
-        var result = await _grpcClient.AppendToStreamAsync(
+        return AppendEventsAsync(
             streamId,
-            StreamState.NoStream,
-            new List<EventData> { eventData },
-            cancellationToken: cancellationToken);
-
-        return new AppendResult((long)result.LogPosition.CommitPosition, result.NextExpectedStreamRevision.ToInt64());
+            new List<IStreamEvent> { @event }.ToImmutableList(),
+            ExpectedStreamVersion.NoStream,
+            cancellationToken);
     }
 
-    public async Task<AppendResult> AppendEventAsync(
+    public Task<AppendResult> AppendEventAsync(
         string streamId,
         IStreamEvent @event,
         ExpectedStreamVersion expectedRevision,
         CancellationToken cancellationToken = default)
     {
-        EventData eventData = @event.ToJsonEventData();
-
-        if (expectedRevision == ExpectedStreamVersion.NoStream)
-        {
-            var result = await _grpcClient.AppendToStreamAsync(
-                streamId,
-                StreamState.NoStream,
-                new List<EventData> { eventData },
-                cancellationToken: cancellationToken);
-
-            return new AppendResult(
-                (long)result.LogPosition.CommitPosition,
-                result.NextExpectedStreamRevision.ToInt64());
-        }
-
-        if (expectedRevision == ExpectedStreamVersion.Any)
-        {
-            var result = await _grpcClient.AppendToStreamAsync(
-                streamId,
-                StreamState.Any,
-                new List<EventData> { eventData },
-                cancellationToken: cancellationToken);
-
-            return new AppendResult(
-                (long)result.LogPosition.CommitPosition,
-                result.NextExpectedStreamRevision.ToInt64());
-        }
-        else
-        {
-            var result = await _grpcClient.AppendToStreamAsync(
-                streamId,
-                expectedRevision.AsStreamRevision(),
-                new List<EventData> { eventData },
-                cancellationToken: cancellationToken);
-
-            return new AppendResult(
-                (long)result.LogPosition.CommitPosition,
-                result.NextExpectedStreamRevision.ToInt64());
-        }
+        return AppendEventsAsync(
+            streamId,
+            new List<IStreamEvent> { @event }.ToImmutableList(),
+            expectedRevision,
+            cancellationToken);
     }
 
     public async Task<AppendResult> AppendEventsAsync(
@@ -112,7 +88,7 @@ public class EventStoreDbEventStore : IEventStore
         ExpectedStreamVersion expectedRevision,
         CancellationToken cancellationToken = default)
     {
-        var eventsData = events.ToJsonEventData();
+        var eventsData = events.Select(x => x.ToJsonEventData());
 
         if (expectedRevision == ExpectedStreamVersion.NoStream)
         {
@@ -156,7 +132,7 @@ public class EventStoreDbEventStore : IEventStore
     public async Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         StreamReadPosition fromVersion,
-        Func<TAggregate> defaultAggregate,
+        TAggregate defaultAggregateState,
         Action<object> fold,
         CancellationToken cancellationToken = default)
         where TAggregate : IEventSourcedAggregate<TId>, new()
@@ -168,10 +144,11 @@ public class EventStoreDbEventStore : IEventStore
             cancellationToken: cancellationToken
         );
 
+        // var streamEvents = (await GetStreamEventsAsync(streamId, fromVersion, int.MaxValue, cancellationToken)).Select(x => x.Data);
         return await readResult
-            .Select(@event => @event.Deserialize()!)
+            .Select(@event => @event.DeserializeData()!)
             .AggregateAsync(
-                defaultAggregate(),
+                defaultAggregateState,
                 (agg, @event) =>
                 {
                     fold(@event);
@@ -183,7 +160,7 @@ public class EventStoreDbEventStore : IEventStore
 
     public Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
-        Func<TAggregate> defaultAggregate,
+        TAggregate defaultAggregateState,
         Action<object> fold,
         CancellationToken cancellationToken = default)
         where TAggregate : IEventSourcedAggregate<TId>, new()
@@ -191,7 +168,7 @@ public class EventStoreDbEventStore : IEventStore
         return AggregateStreamAsync<TAggregate, TId>(
             streamId,
             StreamReadPosition.Start,
-            defaultAggregate,
+            defaultAggregateState,
             fold,
             cancellationToken);
     }

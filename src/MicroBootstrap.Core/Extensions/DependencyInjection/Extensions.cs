@@ -34,8 +34,7 @@ public static class Extensions
         services.AddScoped<IDomainNotificationEventPublisher, DomainNotificationEventPublisher>();
         services.AddScoped<IAggregatesDomainEventsStore, AggregatesDomainEventsStore>();
 
-        AddInMemoryEventStore<InMemoryEventStore>(services, ServiceLifetime.Scoped);
-        services.AddScoped<IEventStoreRepository, EventStoreRepository>();
+        AddEventStore<InMemoryEventStore>(services, ServiceLifetime.Singleton);
 
         switch (configuration["IdGenerator:Type"])
         {
@@ -52,11 +51,13 @@ public static class Extensions
         return services;
     }
 
-    private static IServiceCollection AddInMemoryEventStore<TEventStore>(
+    public static IServiceCollection AddEventStore<TEventStore>(
         this IServiceCollection services,
         ServiceLifetime withLifetime = ServiceLifetime.Transient)
         where TEventStore : class, IEventStore
     {
+        services.Add<IEventStoreRepository, EventStoreRepository>(withLifetime);
+
         return services.Add<TEventStore, TEventStore>(withLifetime)
             .Add<IEventStore>(sp => sp.GetRequiredService<TEventStore>(), withLifetime);
     }

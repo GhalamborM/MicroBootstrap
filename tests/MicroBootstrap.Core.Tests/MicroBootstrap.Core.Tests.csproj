@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\..\src\MicroBootstrap.Core\MicroBootstrap.Core.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Tests.Shared\MicroBootstrap.Tests.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.tests.json">

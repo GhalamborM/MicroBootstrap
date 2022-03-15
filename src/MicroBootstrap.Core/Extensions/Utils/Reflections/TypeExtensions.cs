@@ -13,12 +13,96 @@ namespace MicroBootstrap.Core.Extensions.Utils.Reflections;
 
 public static class TypeExtensions
 {
-    private static readonly ConcurrentDictionary<Type, string> _typeCacheKeys = new();
-    private static readonly ConcurrentDictionary<Type, string> _prettyPrintCache = new();
+    private static readonly ConcurrentDictionary<Type, string> TypeCacheKeys = new();
+    private static readonly ConcurrentDictionary<Type, string> PrettyPrintCache = new();
+
+    /// <summary>
+    /// Invoke a static generic method
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="methodName"></param>
+    /// <param name="genericTypes"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    public static dynamic InvokeGenericMethod(
+        this Type type,
+        string methodName,
+        Type[] genericTypes,
+        params object[] parameters)
+    {
+        var method = type
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
+            .Where(x => x.Name == methodName)
+            .FirstOrDefault(x => x.GetGenericArguments().All(genericTypes.Contains));
+
+        var genericMethod = method.MakeGenericMethod(genericTypes);
+        return genericMethod.Invoke(null, parameters);
+    }
+
+    /// Ref: https://stackoverflow.com/a/39679855/581476
+    /// <summary>
+    /// Invoke an async static generic method
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="methodName"></param>
+    /// <param name="genericTypes"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    public static Task<dynamic> InvokeGenericMethodAsync(
+        this Type type,
+        string methodName,
+        Type[] genericTypes,
+        params object[] parameters)
+    {
+        dynamic awaitable = InvokeGenericMethod(type, methodName, genericTypes, parameters);
+
+        return awaitable;
+    }
+
+    /// <summary>
+    /// Invoke a static method.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="methodName"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    public static dynamic InvokeMethod(
+        this Type type,
+        string methodName,
+        params object[] parameters)
+    {
+        var method = type
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
+            .Where(x => x.Name == methodName)
+            .FirstOrDefault(x =>
+                x.GetParameters().Select(p => p.ParameterType).All(parameters.Select(p => p.GetType()).Contains));
+
+        if (method is null)
+            return null!;
+
+        return method.Invoke(null, parameters);
+    }
+
+    /// <summary>
+    /// Invoke a async static method.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="methodName"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    public static Task<dynamic> InvokeMethodAsync(
+        this Type type,
+        string methodName,
+        params object[] parameters)
+    {
+        dynamic awaitable = InvokeMethod(type, methodName, parameters);
+
+        return awaitable;
+    }
 
     public static string GetCacheKey(this Type type)
     {
-        return _typeCacheKeys.GetOrAdd(type, t => $"{t.PrettyPrint()}");
+        return TypeCacheKeys.GetOrAdd(type, t => $"{t.PrettyPrint()}");
     }
 
     /// <summary>
@@ -718,7 +802,7 @@ public static class TypeExtensions
 
     public static string PrettyPrint(this Type type)
     {
-        return _prettyPrintCache.GetOrAdd(
+        return PrettyPrintCache.GetOrAdd(
             type,
             t =>
             {
@@ -774,7 +858,34 @@ public static class TypeExtensions
             })
             .ToDictionary(
                 mi => mi.GetParameters()[0].ParameterType,
-                mi => ReflectionHelpers.CompileMethodInvocation<Action<TDomainEvent>>(type, mi.Name,
+                mi => type.CompileMethodInvocation<Action<TDomainEvent>>(mi.Name,
                     mi.GetParameters()[0].ParameterType));
+    }
+
+    /// <summary>
+    /// Handles correct upcast. If no upcast was needed, then this could be exchanged to an <c>Expression.Call</c>
+    /// and an <c>Expression.Lambda</c>.
+    /// </summary>
+    public static TResult CompileMethodInvocation<TResult>(
+        this Type type,
+        string methodName,
+        params Type[] methodSignature)
+    {
+        var typeInfo = type.GetTypeInfo();
+        var methods = typeInfo
+            .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            .Where(m => m.Name == methodName);
+
+        var methodInfo = methodSignature == null || !methodSignature.Any()
+            ? methods.SingleOrDefault()
+            : methods.SingleOrDefault(m =>
+                m.GetParameters().Select(mp => mp.ParameterType).SequenceEqual(methodSignature));
+
+        if (methodInfo == null)
+        {
+            throw new ArgumentException($"Type '{type.PrettyPrint()}' doesn't have a method called '{methodName}'");
+        }
+
+        return methodInfo.CompileMethodInvocation<TResult>();
     }
 }

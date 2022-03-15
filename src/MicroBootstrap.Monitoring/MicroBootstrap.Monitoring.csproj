@@ -20,6 +20,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.SQLite.Storage" />
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
+    <PackageReference Include="AspNetCore.HealthChecks.EventStore" />
   </ItemGroup>
 
   <ItemGroup>

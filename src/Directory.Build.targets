@@ -47,8 +47,9 @@
     <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(AspNetCoreHealthCheckVersion)" />
     <PackageReference Update="AspNetCore.HealthChecks.MongoDb" Version="$(AspNetCoreHealthCheckVersion)" />
     <PackageReference Update="AspNetCore.HealthChecks.UI.SQLite.Storage" Version="$(AspNetCoreHealthCheckVersion)" />
-    <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="$(AspNetCoreHealthCheckVersion)" />
-    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="$(AspNetCoreHealthCheckVersion)"/>
+    <PackageReference Update="AspNetCore.HealthChecks.Rabbitmq" Version="$(AspNetCoreHealthCheckVersion)" />
+    <PackageReference Update="AspNetCore.HealthChecks.NpgSql" Version="$(AspNetCoreHealthCheckVersion)"/>
+    <PackageReference Update="AspNetCore.HealthChecks.EventStore" Version="5.0.1"/>
   </ItemGroup>
   
   <ItemGroup>

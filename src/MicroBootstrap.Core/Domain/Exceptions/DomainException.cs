@@ -1,7 +1,7 @@
 using System.Net;
 using MicroBootstrap.Core.Exception.Types;
 
-namespace MicroBootstrap.Abstractions.Domain.Exceptions;
+namespace MicroBootstrap.Core.Domain.Exceptions;
 
 /// <summary>
 /// Exception type for domain exceptions.

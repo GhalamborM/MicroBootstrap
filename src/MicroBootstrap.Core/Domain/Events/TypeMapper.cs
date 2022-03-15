@@ -13,12 +13,32 @@ public static class TypeMapper
     private static readonly ConcurrentDictionary<Type, string> TypeNameMap = new();
     private static readonly ConcurrentDictionary<string, Type> TypeMap = new();
 
+    /// <summary>
+    /// Gets the type name from a generic Type class.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public static string GetTypeName<T>() => ToName(typeof(T));
 
-    public static string GetTypeName(object o) => ToName(o.GetType());
+    /// <summary>
+    /// Gets the type name from a Type class.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static string GetTypeName(Type type) => ToName(type);
 
-    public static string GetTypeNameByType(Type type) => ToName(type);
+    /// <summary>
+    /// Gets the type name from a instance object.
+    /// </summary>
+    /// <param name="o"></param>
+    /// <returns></returns>
+    public static string GetTypeNameByObject(object o) => ToName(o.GetType());
 
+    /// <summary>
+    /// Gets the type class from a type name.
+    /// </summary>
+    /// <param name="typeName"></param>
+    /// <returns></returns>
     public static Type GetType(string typeName) => ToType(typeName);
 
     public static void AddType<T>(string name) => AddType(typeof(T), name);

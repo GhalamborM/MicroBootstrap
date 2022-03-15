@@ -1,11 +1,12 @@
 using Ardalis.GuardClauses;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 
 namespace MicroBootstrap.Core.Domain.Events.Store;
 
 public class StreamName
 {
-    string Value { get; }
+    public string Value { get; }
 
     public StreamName(string value)
     {
@@ -16,7 +17,7 @@ public class StreamName
     public static StreamName For<T>(string id) => new($"{typeof(T).Name}-{Guard.Against.NullOrEmpty(id, nameof(id))}");
 
     public static StreamName For<TAggregate, TId>(TId aggregateId)
-        where TAggregate : IEventSourcedAggregate<TId>
+        where TAggregate : IAggregate<TId>
         => For<TAggregate>(aggregateId.ToString());
 
     public static implicit operator string(StreamName streamName) => streamName.Value;

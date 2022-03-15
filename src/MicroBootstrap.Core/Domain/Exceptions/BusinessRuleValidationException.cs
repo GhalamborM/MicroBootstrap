@@ -1,6 +1,6 @@
 using MicroBootstrap.Abstractions.Core.Domain;
 
-namespace MicroBootstrap.Abstractions.Domain.Exceptions;
+namespace MicroBootstrap.Core.Domain.Exceptions;
 
 public class BusinessRuleValidationException : DomainException
 {

@@ -3,14 +3,15 @@ using System.Collections.Immutable;
 using MicroBootstrap.Abstractions.Core.Domain;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
-using MicroBootstrap.Abstractions.Domain.Exceptions;
+using MicroBootstrap.Core.Domain.Exceptions;
 using MicroBootstrap.Core.Extensions.Utils.Reflections;
 
-namespace MicroBootstrap.Abstractions.Domain.Model.EventSourcing;
+namespace MicroBootstrap.Core.Domain.Model.EventSourcing;
 
 public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TId>
 {
-    [NonSerialized] private readonly ConcurrentQueue<IDomainEvent> _uncommittedDomainEvents = new();
+    [NonSerialized]
+    private readonly ConcurrentQueue<IDomainEvent> _uncommittedDomainEvents = new();
 
     // -1: No Stream
     public const long NewAggregateVersion = -1;
@@ -30,7 +31,7 @@ public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TI
     /// </summary>
     /// <typeparam name="TDomainEvent">Type of domain event.</typeparam>
     /// <param name="domainEvent"></param>
-    protected void ApplyEvent<TDomainEvent>(TDomainEvent domainEvent)
+    protected virtual void ApplyEvent<TDomainEvent>(TDomainEvent domainEvent)
         where TDomainEvent : IDomainEvent
     {
         AddDomainEvent(domainEvent);
@@ -43,7 +44,7 @@ public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TI
     {
         if (GetType().HasAggregateApplyMethod(@event.GetType()))
         {
-            ((dynamic)this).Apply((dynamic)@event);
+            this.InvokeMethod("Apply", @event);
         }
         else
         {

@@ -1,20 +1,28 @@
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
+using MicroBootstrap.Core.Domain.Events.Store.Extensions;
 
 namespace MicroBootstrap.Core.Domain.Events.Store.InMemory;
 
 public class InMemoryEventStore : IEventStore
 {
     private readonly Dictionary<string, InMemoryStream> _storage = new();
-    private readonly List<dynamic> _global = new();
+    private readonly List<StreamEventData> _global = new();
+
+    public Task<bool> StreamExists(string streamId, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(_storage.ContainsKey(streamId));
+    }
 
     public Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
         string streamId,
         StreamReadPosition? fromVersion = null,
-        long maxCount = long.MaxValue,
+        int maxCount = int.MaxValue,
         CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(FindStream(streamId).GetEvents(fromVersion ?? StreamReadPosition.Start, maxCount));
+        var result = FindStream(streamId).GetEvents(fromVersion ?? StreamReadPosition.Start, maxCount);
+
+        return Task.FromResult<IEnumerable<IStreamEvent>>(result.Select(x => x.ToStreamEvent()));
     }
 
     public Task<IEnumerable<IStreamEvent>> GetStreamEventsAsync(
@@ -22,7 +30,7 @@ public class InMemoryEventStore : IEventStore
         StreamReadPosition? fromVersion = null,
         CancellationToken cancellationToken = default)
     {
-        return GetStreamEventsAsync(streamId, fromVersion, long.MaxValue, cancellationToken);
+        return GetStreamEventsAsync(streamId, fromVersion, int.MaxValue, cancellationToken);
     }
 
     public Task<AppendResult> AppendEventAsync(
@@ -30,19 +38,7 @@ public class InMemoryEventStore : IEventStore
         IStreamEvent @event,
         CancellationToken cancellationToken = default)
     {
-        if (!_storage.TryGetValue(streamId, out var existing))
-        {
-            existing = new InMemoryStream(streamId);
-        }
-
-        var events = new List<IStreamEvent> { @event };
-        existing.AppendEvents(ExpectedStreamVersion.NoStream, events.AsReadOnly());
-
-        _global.AddRange(events);
-
-        return Task.FromResult(
-            new AppendResult(_global.Count - 1, existing.Version)
-        );
+        return AppendEventsAsync(streamId, new[] { @event }, ExpectedStreamVersion.NoStream, cancellationToken);
     }
 
     public Task<AppendResult> AppendEventAsync(
@@ -51,19 +47,7 @@ public class InMemoryEventStore : IEventStore
         ExpectedStreamVersion expectedRevision,
         CancellationToken cancellationToken = default)
     {
-        if (!_storage.TryGetValue(streamId, out var existing))
-        {
-            existing = new InMemoryStream(streamId);
-        }
-
-        var events = new List<IStreamEvent> { @event };
-        existing.AppendEvents(expectedRevision, events.AsReadOnly());
-
-        _global.AddRange(events);
-
-        return Task.FromResult(
-            new AppendResult(_global.Count - 1, existing.Version)
-        );
+        return AppendEventsAsync(streamId, new[] { @event }, expectedRevision, cancellationToken);
     }
 
     public Task<AppendResult> AppendEventsAsync(
@@ -75,30 +59,33 @@ public class InMemoryEventStore : IEventStore
         if (!_storage.TryGetValue(streamId, out var existing))
         {
             existing = new InMemoryStream(streamId);
+            _storage.Add(streamId, existing);
         }
 
-        existing.AppendEvents(expectedRevision, events);
+        var inMemoryEvents = events.Select(x => x.ToJsonStreamEventData()).ToList();
 
-        _global.AddRange(events);
+        existing.AppendEvents(expectedRevision, _global.Count - 1, inMemoryEvents);
+
+        _global.AddRange(inMemoryEvents);
 
         return Task.FromResult(
             new AppendResult(_global.Count - 1, existing.Version)
         );
     }
 
-    public Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
+    public async Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         StreamReadPosition fromVersion,
-        Func<TAggregate> defaultAggregate,
+        TAggregate defaultAggregateState,
         Action<object> fold,
         CancellationToken cancellationToken = default)
         where TAggregate : IEventSourcedAggregate<TId>, new()
     {
-        var streamEvents = FindStream(streamId).GetEvents(fromVersion, long.MaxValue).ToList();
-        var aggregate = AggregateFactory<TAggregate>.CreateAggregate();
+        // var streamEvents = (await GetStreamEventsAsync(streamId, fromVersion, int.MaxValue, cancellationToken)).Select(x => x.Data);
+        var streamEvents = FindStream(streamId).GetEvents(fromVersion, int.MaxValue).Select(x => x.DeserializeData());
 
         var result = streamEvents.Aggregate(
-            aggregate,
+            defaultAggregateState,
             (agg, @event) =>
             {
                 fold(@event);
@@ -106,12 +93,12 @@ public class InMemoryEventStore : IEventStore
             }
         );
 
-        return Task.FromResult(result);
+        return result;
     }
 
     public Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
-        Func<TAggregate> defaultAggregate,
+        TAggregate defaultAggregateState,
         Action<object> fold,
         CancellationToken cancellationToken = default)
         where TAggregate : IEventSourcedAggregate<TId>, new()
@@ -119,7 +106,7 @@ public class InMemoryEventStore : IEventStore
         return AggregateStreamAsync<TAggregate, TId>(
             streamId,
             StreamReadPosition.Start,
-            defaultAggregate,
+            defaultAggregateState,
             fold,
             cancellationToken);
     }

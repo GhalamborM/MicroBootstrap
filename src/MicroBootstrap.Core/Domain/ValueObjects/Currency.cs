@@ -1,8 +1,8 @@
 using Ardalis.GuardClauses;
-using MicroBootstrap.Abstractions.Domain.Exceptions;
+using MicroBootstrap.Core.Domain.Exceptions;
 using MicroBootstrap.Core.Exception;
 
-namespace MicroBootstrap.Abstractions.Domain.ValueObjects;
+namespace MicroBootstrap.Core.Domain.ValueObjects;
 
 public record Currency
 {

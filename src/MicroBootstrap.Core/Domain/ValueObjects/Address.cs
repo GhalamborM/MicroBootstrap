@@ -1,6 +1,6 @@
 using Ardalis.GuardClauses;
 
-namespace MicroBootstrap.Abstractions.Domain.ValueObjects;
+namespace MicroBootstrap.Core.Domain.ValueObjects;
 
 public record Address
 {

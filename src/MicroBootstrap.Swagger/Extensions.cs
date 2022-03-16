@@ -1,4 +1,14 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace MicroBootstrap.Swagger;
 
@@ -64,12 +74,12 @@ public static class Extensions
                 });
 
                 options.AddSecurityDefinition(
-                    ApiKeyConstants.HeaderName,
+                    Constants.ApiKeyConstants.HeaderName,
                     new OpenApiSecurityScheme
                     {
                         Description = "Api key needed to access the endpoints. X-Api-Key: My_API_Key",
                         In = ParameterLocation.Header,
-                        Name = ApiKeyConstants.HeaderName,
+                        Name = Constants.ApiKeyConstants.HeaderName,
                         Type = SecuritySchemeType.ApiKey
                     });
 
@@ -88,12 +98,12 @@ public static class Extensions
                     {
                         new OpenApiSecurityScheme
                         {
-                            Name = ApiKeyConstants.HeaderName,
+                            Name = Constants.ApiKeyConstants.HeaderName,
                             Type = SecuritySchemeType.ApiKey,
                             In = ParameterLocation.Header,
                             Reference = new OpenApiReference
                             {
-                                Type = ReferenceType.SecurityScheme, Id = ApiKeyConstants.HeaderName
+                                Type = ReferenceType.SecurityScheme, Id = Constants.ApiKeyConstants.HeaderName
                             }
                         },
                         Array.Empty<string>()
@@ -157,7 +167,7 @@ public static class Extensions
 
         static string XmlCommentsFilePath(Assembly assembly)
         {
-            var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+            var basePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var fileName = assembly.GetName().Name + ".xml";
             return Path.Combine(basePath, fileName);
         }

@@ -1,5 +1,8 @@
 using System.Reflection;
 using MicroBootstrap.Web.Module;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 
 namespace MicroBootstrap.Web.Extensions;
 

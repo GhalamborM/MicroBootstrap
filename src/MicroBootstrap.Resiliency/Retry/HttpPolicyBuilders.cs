@@ -1,4 +1,6 @@
 using System.Net;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace MicroBootstrap.Resiliency.Retry;
 

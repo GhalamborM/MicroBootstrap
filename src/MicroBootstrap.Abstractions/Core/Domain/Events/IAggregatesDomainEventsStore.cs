@@ -5,10 +5,10 @@ namespace MicroBootstrap.Abstractions.Core.Domain.Events;
 
 public interface IAggregatesDomainEventsStore
 {
-    IReadOnlyList<IDomainEvent> AddEventsFrom<T>(T aggregate)
+    IReadOnlyList<IDomainEvent> AddEventsFromAggregate<T>(T aggregate)
         where T : IHaveAggregate;
 
-    IReadOnlyList<IDomainEvent> AddEventsFrom(object entity);
+    void AddEvents(IReadOnlyList<IDomainEvent> events);
 
     IReadOnlyList<IDomainEvent> GetAllUncommittedEvents();
 }

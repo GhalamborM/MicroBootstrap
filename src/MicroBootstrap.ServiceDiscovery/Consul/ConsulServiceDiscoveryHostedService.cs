@@ -1,4 +1,9 @@
-﻿namespace MicroBootstrap.ServiceDiscovery.Consul;
+﻿using Consul;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+namespace MicroBootstrap.ServiceDiscovery.Consul;
 
 public class ConsulServiceDiscoveryHostedService : IHostedService
 {

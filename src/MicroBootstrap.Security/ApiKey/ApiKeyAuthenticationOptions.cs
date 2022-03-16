@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication;
+
 namespace MicroBootstrap.Security.ApiKey;
 
 public class ApiKeyAuthenticationOptions : AuthenticationSchemeOptions

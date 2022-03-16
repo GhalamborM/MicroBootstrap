@@ -1,5 +1,5 @@
 using EventStore.Client;
-using MicroBootstrap.Core.Domain.Events.Store;
+using MicroBootstrap.Core.Persistence.EventStore;
 
 namespace MicroBootstrap.Persistence.EventStoreDB.Extensions;
 

@@ -26,6 +26,7 @@
     <PackageReference Include="Serilog.Sinks.Xunit2" Version="1.1.0"/>
     <PackageReference Include="System.Reactive.Linq" Version="5.0.0"/>
     <PackageReference Include="Bogus" Version="34.0.1"/>
+    <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.2.0"/>
   </ItemGroup>
   
 </Project>

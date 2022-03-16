@@ -19,10 +19,20 @@ services:
       EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP: "true"
 
   # mongo:
-  #   container_name: mongo
   #   image: mongo
+  #   container_name: mongo
+  #   restart: on-failure
   #   ports:
-  #     - '27017:27017'
+  #     - ${MONGODB_PORT}: 27017
+
+  postgres:
+    image: postgres:11.1-alpine
+    restart: on-failure
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
   # rabbitmq:
   #   container_name: rabbitmq

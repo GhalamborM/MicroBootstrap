@@ -8,27 +8,22 @@ public class AggregatesDomainEventsStore : IAggregatesDomainEventsStore
 {
     private readonly List<IDomainEvent> _uncommittedDomainEvents = new();
 
-    public IReadOnlyList<IDomainEvent> AddEventsFrom<T>(T aggregate)
+    public IReadOnlyList<IDomainEvent> AddEventsFromAggregate<T>(T aggregate)
         where T : IHaveAggregate
     {
         var events = aggregate.GetUncommittedEvents();
 
-        if (events.Any())
-        {
-            _uncommittedDomainEvents.AddRange(events);
-        }
+        AddEvents(events);
 
         return events;
     }
 
-    public IReadOnlyList<IDomainEvent> AddEventsFrom(object entity)
+    public void AddEvents(IReadOnlyList<IDomainEvent> events)
     {
-        if (entity is IHaveAggregate aggregate)
+        if (events.Any())
         {
-            return AddEventsFrom(aggregate);
+            _uncommittedDomainEvents.AddRange(events);
         }
-
-        return new List<IDomainEvent>();
     }
 
     public IReadOnlyList<IDomainEvent> GetAllUncommittedEvents()

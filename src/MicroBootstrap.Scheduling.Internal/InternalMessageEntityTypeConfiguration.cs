@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace MicroBootstrap.Scheduling.Internal;
 
 public class InternalMessageEntityTypeConfiguration : IEntityTypeConfiguration<InternalMessage>

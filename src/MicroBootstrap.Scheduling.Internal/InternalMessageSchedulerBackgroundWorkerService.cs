@@ -1,5 +1,8 @@
 using System.Diagnostics;
 using MicroBootstrap.Scheduling.Internal.Services;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace MicroBootstrap.Scheduling.Internal;
 

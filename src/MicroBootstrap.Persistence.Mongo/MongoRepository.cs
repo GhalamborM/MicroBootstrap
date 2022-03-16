@@ -1,4 +1,7 @@
 using System.Linq.Expressions;
+using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Persistence.Mongo;
+using MongoDB.Driver;
 
 namespace MicroBootstrap.Persistence.Mongo;
 

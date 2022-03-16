@@ -89,13 +89,13 @@ public interface IEventStore
     /// <typeparam name="TAggregate"></typeparam>
     /// <typeparam name="TId"></typeparam>
     /// <returns></returns>
-    Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
+    Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         StreamReadPosition fromVersion,
         TAggregate defaultAggregateState,
         Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>, new();
+        where TAggregate : class, IEventSourcedAggregate<TId>, new();
 
     /// <summary>
     ///  Rehydrating aggregate from events in the event store.
@@ -107,10 +107,10 @@ public interface IEventStore
     /// <typeparam name="TAggregate"></typeparam>
     /// <typeparam name="TId"></typeparam>
     /// <returns></returns>
-    Task<TAggregate> AggregateStreamAsync<TAggregate, TId>(
+    Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         TAggregate defaultAggregateState,
         Action<object> fold,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>, new();
+        where TAggregate : class, IEventSourcedAggregate<TId>, new();
 }

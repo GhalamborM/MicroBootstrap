@@ -5,12 +5,12 @@ namespace MicroBootstrap.Abstractions.Persistence;
 /// </summary>
 public interface IUnitOfWork : IDisposable
 {
+    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
     Task CommitAsync(CancellationToken cancellationToken = default);
 }
 
-public interface IUnitOfWork<out TContext> : IDisposable
+public interface IUnitOfWork<out TContext> : IUnitOfWork
     where TContext : class
 {
     TContext Context { get; }
-    Task CommitAsync(CancellationToken cancellationToken = default);
 }

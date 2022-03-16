@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -13,6 +13,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--https://github.com/dotnet/aspnetcore/issues/19481-->
+    <!--https://docs.microsoft.com/en-us/aspnet/core/fundamentals/metapackage-app-->
+    <!--https://docs.microsoft.com/en-us/aspnet/core/fundamentals/target-aspnetcore-->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

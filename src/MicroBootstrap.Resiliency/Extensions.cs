@@ -1,6 +1,8 @@
 using System.Reflection;
+using MediatR;
 using MicroBootstrap.Resiliency.Fallback;
 using MicroBootstrap.Resiliency.Retry;
+using Scrutor;
 
 namespace MicroBootstrap.Resiliency;
 

@@ -1,3 +1,7 @@
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Polly;
+
 namespace MicroBootstrap.Resiliency.Retry;
 
 public class RetryBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>

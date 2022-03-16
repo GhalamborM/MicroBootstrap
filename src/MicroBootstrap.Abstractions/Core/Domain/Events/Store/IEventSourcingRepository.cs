@@ -15,7 +15,7 @@ public interface IEventStoreRepository
     Task<TAggregate?> GetAsync<TAggregate, TId>(
         TId aggregateId,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>, new();
+        where TAggregate : class, IEventSourcedAggregate<TId>, new();
 
     /// <summary>
     /// Store an aggregate state to the store with using some events (use for updating, adding and deleting).
@@ -30,7 +30,7 @@ public interface IEventStoreRepository
         TAggregate aggregate,
         ExpectedStreamVersion? expectedVersion = null,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>;
+        where TAggregate : class, IEventSourcedAggregate<TId>, new();
 
     /// <summary>
     /// Store an aggregate state to the store with using some events (use for updating, adding and deleting).
@@ -43,7 +43,7 @@ public interface IEventStoreRepository
     public Task Store<TAggregate, TId>(
         TAggregate aggregate,
         CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>;
+        where TAggregate : class, IEventSourcedAggregate<TId>, new();
 
     /// <summary>
     /// Check if aggregate exists in the store.
@@ -54,5 +54,5 @@ public interface IEventStoreRepository
     /// <typeparam name="TId"></typeparam>
     /// <returns></returns>
     Task<bool> Exists<TAggregate, TId>(TId aggregateId, CancellationToken cancellationToken = default)
-        where TAggregate : IEventSourcedAggregate<TId>;
+        where TAggregate : class, IEventSourcedAggregate<TId>, new();
 }

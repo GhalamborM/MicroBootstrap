@@ -1,4 +1,8 @@
 using System.Text.Json;
+using MediatR;
+using MicroBootstrap.Abstractions.Persistence;
+using MicroBootstrap.Abstractions.Persistence.Mongo;
+using Microsoft.Extensions.Logging;
 
 namespace MicroBootstrap.Persistence.Mongo;
 

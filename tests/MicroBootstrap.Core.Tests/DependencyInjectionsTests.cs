@@ -1,7 +1,7 @@
 using FluentAssertions;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
-using MicroBootstrap.Core.Domain.Events.Store.InMemory;
 using MicroBootstrap.Core.Extensions.DependencyInjection;
+using MicroBootstrap.Core.Persistence.EventStore.InMemory;
 using MicroBootstrap.Tests.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

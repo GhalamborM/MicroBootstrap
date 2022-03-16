@@ -8,7 +8,7 @@ namespace MicroBootstrap.Scheduling.Internal.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
-    public static async Task UsePostgresMessaging(this IApplicationBuilder app, ILogger logger)
+    public static async Task UseInternalScheduler(this IApplicationBuilder app, ILogger logger)
     {
         await ApplyDatabaseMigrations(app, logger);
     }

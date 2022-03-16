@@ -1,7 +1,7 @@
-using MicroBootstrap.Messaging.Outbox;
+using MicroBootstrap.Messaging.Postgres.Outbox;
 using MicroBootstrap.Persistence.EfCore.Postgres;
 
-namespace MicroBootstrap.Messaging;
+namespace MicroBootstrap.Messaging.Postgres;
 
 public class OutboxDbContextDesignFactory : DbContextDesignFactoryBase<OutboxDataContext>
 {

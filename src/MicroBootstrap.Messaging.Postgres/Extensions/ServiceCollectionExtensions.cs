@@ -2,11 +2,11 @@ using System.Reflection;
 using Ardalis.GuardClauses;
 using MicroBootstrap.Abstractions.Messaging.Outbox;
 using MicroBootstrap.Core.Extensions.Configuration;
-using MicroBootstrap.Messaging.Outbox;
+using MicroBootstrap.Messaging.Postgres.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace MicroBootstrap.Messaging;
+namespace MicroBootstrap.Messaging.Postgres.Extensions;
 
 public static class ServiceCollectionExtensions
 {

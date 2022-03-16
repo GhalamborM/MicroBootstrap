@@ -1,10 +1,10 @@
-using MicroBootstrap.Messaging.Outbox;
+using MicroBootstrap.Messaging.Postgres.Outbox;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace MicroBootstrap.Messaging;
+namespace MicroBootstrap.Messaging.Postgres.Extensions;
 
 public static class ApplicationBuilderExtensions
 {

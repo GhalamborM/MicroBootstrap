@@ -1,3 +1,4 @@
+using System.Reflection;
 using MicroBootstrap.Core.Persistence.EfCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,9 @@ public class InternalMessageDbContext : EfDbContextBase
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new InternalMessageEntityTypeConfiguration());
+        modelBuilder.HasPostgresExtension(EfConstants.UuidGenerator);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        base.OnModelCreating(modelBuilder);
     }
 }

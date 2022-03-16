@@ -12,15 +12,14 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPostgresMessaging(
         this IServiceCollection services,
-        IConfiguration configuration,
-        Assembly? migrationAssembly = null)
+        IConfiguration configuration)
     {
-        AddOutbox(services, configuration, migrationAssembly);
+        AddOutbox(services, configuration);
 
         return services;
     }
 
-    private static void AddOutbox(IServiceCollection services, IConfiguration configuration, Assembly? migrationAssembly)
+    private static void AddOutbox(IServiceCollection services, IConfiguration configuration)
     {
         var outboxOption = Guard.Against.Null(
             configuration.GetOptions<OutboxOptions>(nameof(OutboxOptions)),
@@ -36,7 +35,7 @@ public static class ServiceCollectionExtensions
         {
             options.UseNpgsql(outboxOption.ConnectionString, sqlOptions =>
             {
-                sqlOptions.MigrationsAssembly((migrationAssembly ?? Assembly.GetExecutingAssembly()).GetName().Name);
+                sqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
                 sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             }).UseSnakeCaseNamingConvention();
         });

@@ -1,10 +1,9 @@
 using System.Collections;
-using MicroBootstrap.Core.Extensions;
 using MicroBootstrap.Core.Extensions.Utils;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace MicroBootstrap.Web.Extensions;
+namespace MicroBootstrap.Core.Extensions;
 
 // https://khalidabuhakmeh.com/read-and-convert-querycollection-values-in-aspnet
 public static class QueryCollectionExtensions

@@ -1,8 +1,9 @@
+using System.Reflection;
 using MicroBootstrap.Abstractions.Messaging.Outbox;
 using MicroBootstrap.Core.Persistence.EfCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace MicroBootstrap.Messaging.Outbox;
+namespace MicroBootstrap.Messaging.Postgres.Outbox;
 
 public class OutboxDataContext : EfDbContextBase
 {
@@ -19,6 +20,9 @@ public class OutboxDataContext : EfDbContextBase
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new OutboxMessageEntityTypeConfiguration());
+        modelBuilder.HasPostgresExtension(EfConstants.UuidGenerator);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        base.OnModelCreating(modelBuilder);
     }
 }

@@ -2,6 +2,6 @@
 
 ```bash
 
-dotnet ef migrations add InitialInternalMessagesMigration -o \Migrations\Data\Migrations\ -c InternalMessageDbContext
+dotnet ef migrations add InitialCreate -c InternalMessageDbContext
 dotnet ef database update -c InternalMessageDbContext
 ```

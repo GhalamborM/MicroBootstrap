@@ -2,7 +2,7 @@ using MicroBootstrap.Abstractions.Messaging.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MicroBootstrap.Messaging.Outbox;
+namespace MicroBootstrap.Messaging.Postgres.Outbox;
 
 public class OutboxMessageEntityTypeConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {

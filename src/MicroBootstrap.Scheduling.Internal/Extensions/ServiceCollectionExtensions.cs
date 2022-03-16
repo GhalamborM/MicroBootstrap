@@ -3,20 +3,20 @@ using Ardalis.GuardClauses;
 using MicroBootstrap.Abstractions.Scheduler;
 using MicroBootstrap.Core.Extensions.Configuration;
 using MicroBootstrap.Core.Persistence.EfCore;
+using MicroBootstrap.Scheduling.Internal.Data;
 using MicroBootstrap.Scheduling.Internal.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace MicroBootstrap.Scheduling.Internal;
+namespace MicroBootstrap.Scheduling.Internal.Extensions;
 
 public static class Extensions
 {
-    public static IServiceCollection AddInternalScheduler<TContext>(
+    public static IServiceCollection AddInternalScheduler(
         this IServiceCollection services,
         IConfiguration configuration)
-        where TContext : EfDbContextBase
     {
-        SddInternalMessagesContext<TContext>(services, configuration);
+        SddInternalMessagesContext<InternalMessageDbContext>(services, configuration);
 
         services.AddScoped<IScheduler, InternalScheduler>();
         services.AddScoped<IMessageScheduler, InternalScheduler>();

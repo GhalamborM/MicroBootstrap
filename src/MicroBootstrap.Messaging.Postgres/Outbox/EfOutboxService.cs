@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace MicroBootstrap.Messaging.Outbox;
+namespace MicroBootstrap.Messaging.Postgres.Outbox;
 
 public class EfOutboxService<TContext> : IOutboxService
     where TContext : EfDbContextBase

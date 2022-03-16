@@ -7,7 +7,7 @@ using MicroBootstrap.Scheduling.Internal.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace MicroBootstrap.Scheduling.Internal;
+namespace MicroBootstrap.Scheduling.Internal.Extensions;
 
 public static class Extensions
 {

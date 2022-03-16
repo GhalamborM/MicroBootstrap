@@ -1,10 +1,10 @@
-using MicroBootstrap.Messaging.Outbox;
+using MicroBootstrap.Scheduling.Internal.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace MicroBootstrap.Messaging;
+namespace MicroBootstrap.Scheduling.Internal.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
@@ -19,13 +19,13 @@ public static class ApplicationBuilderExtensions
         if (configuration.GetValue<bool>("UseInMemoryDatabase") == false)
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
-            var outboxDbContext = serviceScope.ServiceProvider.GetRequiredService<OutboxDataContext>();
+            var internalMessageDbContext = serviceScope.ServiceProvider.GetRequiredService<InternalMessageDbContext>();
 
-            logger.LogInformation("Updating outbox-message database migrations...");
+            logger.LogInformation("Updating internal-message database migrations...");
 
-            await outboxDbContext.Database.MigrateAsync();
+            await internalMessageDbContext.Database.MigrateAsync();
 
-            logger.LogInformation("Updated outbox-message database migrations");
+            logger.LogInformation("Updated internal-message database migrations");
         }
     }
 }

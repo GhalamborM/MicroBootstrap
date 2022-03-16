@@ -1,3 +1,8 @@
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+
 namespace MicroBootstrap.Security.Jwt;
 
 public class JwtAuthBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>

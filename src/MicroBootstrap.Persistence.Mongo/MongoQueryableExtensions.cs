@@ -1,5 +1,10 @@
 using System.Linq.Expressions;
-using FilterModel = MicroBootstrap.MicroBootstrap.Abstractions.CQRS.FilterModel;
+using AutoMapper.QueryableExtensions;
+using MicroBootstrap.Abstractions.CQRS;
+using MicroBootstrap.Abstractions.Persistence.EfCore.Specification;
+using MicroBootstrap.Core.Types;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 
 namespace MicroBootstrap.Persistence.Mongo;

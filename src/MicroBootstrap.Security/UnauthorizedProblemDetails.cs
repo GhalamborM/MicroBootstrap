@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace MicroBootstrap.Security;
 
 public class UnauthorizedProblemDetails : ProblemDetails

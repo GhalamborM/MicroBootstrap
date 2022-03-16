@@ -1,6 +1,16 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using MediatR;
+using MicroBootstrap.Core.Exception.Types;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace MicroBootstrap.Security.Jwt;
 

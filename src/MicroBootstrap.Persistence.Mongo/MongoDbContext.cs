@@ -1,3 +1,9 @@
+using MicroBootstrap.Abstractions.Persistence;
+using MicroBootstrap.Abstractions.Persistence.Mongo;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Driver;
+
 namespace MicroBootstrap.Persistence.Mongo;
 
 // https://www.thecodebuzz.com/mongodb-repository-implementation-unit-testing-net-core-example/

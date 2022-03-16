@@ -1,10 +1,15 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace MicroBootstrap.Security.ApiKey;
 
-//https://josef.codes/asp-net-core-protect-your-api-with-api-keys/
+// https://josef.codes/asp-net-core-protect-your-api-with-api-keys/
 public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
 {
     private const string ProblemDetailsContentType = "application/problem+json";

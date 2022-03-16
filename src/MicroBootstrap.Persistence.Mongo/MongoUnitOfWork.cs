@@ -1,3 +1,6 @@
+using MicroBootstrap.Abstractions.Persistence;
+using MicroBootstrap.Abstractions.Persistence.Mongo;
+
 namespace MicroBootstrap.Persistence.Mongo;
 
 public class MongoUnitOfWork<TContext> : IMongoUnitOfWork<TContext>, ITransactionAble

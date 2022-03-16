@@ -1,3 +1,5 @@
+using MediatR;
+
 namespace MicroBootstrap.Resiliency.Retry;
 
 public interface IRetryableRequest<TRequest, TResponse>

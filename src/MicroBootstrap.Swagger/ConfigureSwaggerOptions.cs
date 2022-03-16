@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+
 namespace MicroBootstrap.Swagger;
 
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
@@ -14,8 +19,10 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     public void Configure(SwaggerGenOptions options)
     {
         if (_provider != null)
+        {
             foreach (var description in _provider.ApiVersionDescriptions)
                 options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
+        }
     }
 
     private OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)

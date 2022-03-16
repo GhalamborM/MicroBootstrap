@@ -1,4 +1,7 @@
 using MicroBootstrap.Resiliency.Configs;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.CircuitBreaker;
 
 namespace MicroBootstrap.Resiliency.Retry;
 

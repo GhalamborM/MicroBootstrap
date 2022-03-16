@@ -1,4 +1,6 @@
 using System.Net;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace MicroBootstrap.Security.Jwt;
 

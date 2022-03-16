@@ -1,3 +1,6 @@
+using MicroBootstrap.Abstractions.CQRS.Command;
+using MicroBootstrap.Abstractions.Messaging;
+
 namespace MicroBootstrap.Scheduling.Internal.Services;
 
 public interface IInternalSchedulerService

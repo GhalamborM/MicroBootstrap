@@ -1,5 +1,6 @@
 using System.Reflection;
 using MicroBootstrap.Web.MinimalApi;
+using Microsoft.AspNetCore.Routing;
 
 namespace MicroBootstrap.Web.Extensions;
 

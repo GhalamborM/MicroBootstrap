@@ -1,5 +1,10 @@
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Ardalis.GuardClauses;
+using MicroBootstrap.Core.Extensions.Utils;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MicroBootstrap.Security.Jwt;
 

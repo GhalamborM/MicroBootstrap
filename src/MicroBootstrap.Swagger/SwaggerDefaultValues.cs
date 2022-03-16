@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerGen;
+
 namespace MicroBootstrap.Swagger;
 
 public class SwaggerDefaultValues : IOperationFilter
@@ -16,8 +21,10 @@ public class SwaggerDefaultValues : IOperationFilter
             var response = operation.Responses[responseKey];
 
             foreach (var contentType in response.Content.Keys)
+            {
                 if (responseType.ApiResponseFormats.All(x => x.MediaType != contentType))
                     response.Content.Remove(contentType);
+            }
         }
 
         if (operation.Parameters == null) return;
@@ -33,8 +40,11 @@ public class SwaggerDefaultValues : IOperationFilter
             if (parameter.Schema.Default == null && description.DefaultValue != null)
             {
                 // REF: https://github.com/Microsoft/aspnet-api-versioning/issues/429#issuecomment-605402330
-                var json = JsonConvert.SerializeObject(description.DefaultValue, description.ModelMetadata
-                    .ModelType, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                var json = JsonConvert.SerializeObject(
+                    description.DefaultValue,
+                    description.ModelMetadata
+                    .ModelType,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                 parameter.Schema.Default = OpenApiAnyFactory.CreateFromJson(json);
             }
 

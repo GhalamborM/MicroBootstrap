@@ -1,3 +1,6 @@
+using MicroBootstrap.Abstractions.Persistence.Mongo;
+using Microsoft.Extensions.Configuration;
+
 namespace MicroBootstrap.Persistence.Mongo
 {
     public static class Extensions

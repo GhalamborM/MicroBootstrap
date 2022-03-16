@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MicroBootstrap.Abstractions\MicroBootstrap.Abstractions.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Core\MicroBootstrap.Core.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Messaging.Postgres\MicroBootstrap.Messaging.Postgres.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,3 +1,8 @@
+using Consul;
+using MicroBootstrap.Core.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+
 namespace MicroBootstrap.ServiceDiscovery.Consul;
 
 public static class Extensions

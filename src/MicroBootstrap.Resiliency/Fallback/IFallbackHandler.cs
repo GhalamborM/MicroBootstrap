@@ -1,3 +1,5 @@
+using MediatR;
+
 namespace MicroBootstrap.Resiliency.Fallback;
 
 public interface IFallbackHandler<TRequest, TResponse>

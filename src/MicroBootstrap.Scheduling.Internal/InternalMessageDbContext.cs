@@ -1,3 +1,6 @@
+using MicroBootstrap.Core.Persistence.EfCore;
+using Microsoft.EntityFrameworkCore;
+
 namespace MicroBootstrap.Scheduling.Internal;
 
 public class InternalMessageDbContext : EfDbContextBase

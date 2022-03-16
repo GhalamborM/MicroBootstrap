@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using FluentAssertions;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Domain;
 using MicroBootstrap.Core.Domain.Events.Internal;
 using MicroBootstrap.Core.Domain.Model.EventSourcing;

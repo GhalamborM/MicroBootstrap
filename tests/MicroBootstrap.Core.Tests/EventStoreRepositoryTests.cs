@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using FluentAssertions;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Domain.Events.Internal;
 using MicroBootstrap.Core.Domain.Model.EventSourcing;
 using MicroBootstrap.Core.Tests.Fixtures;
@@ -22,7 +22,7 @@ public class EventStoreRepositoryTests : IClassFixture<IntegrationFixture>
     {
         var shoppingCart = await AddInitItemToStore();
 
-        var exists = await _integrationFixture.EventStoreRepository.Exists<ShoppingCart,Guid>(shoppingCart.Id);
+        var exists = await _integrationFixture.EventSourcedRepository.Exists<ShoppingCart,Guid>(shoppingCart.Id);
 
         exists.Should().BeTrue();
     }
@@ -33,12 +33,12 @@ public class EventStoreRepositoryTests : IClassFixture<IntegrationFixture>
         var shoppingCart = ShoppingCart.Create(Guid.NewGuid());
         shoppingCart.AddItem(Guid.NewGuid());
 
-        var appendResult = await _integrationFixture.EventStoreRepository.Store<ShoppingCart, Guid>(
+        var appendResult = await _integrationFixture.EventSourcedRepository.Store<ShoppingCart, Guid>(
             shoppingCart,
             new ExpectedStreamVersion(shoppingCart.OriginalVersion),
             CancellationToken.None);
 
-        var fetchedItem = await _integrationFixture.EventStoreRepository.GetAsync<ShoppingCart, Guid>(shoppingCart.Id);
+        var fetchedItem = await _integrationFixture.EventSourcedRepository.GetAsync<ShoppingCart, Guid>(shoppingCart.Id);
 
         appendResult.Should().NotBeNull();
         appendResult.NextExpectedVersion.Should().Be(1);
@@ -54,7 +54,7 @@ public class EventStoreRepositoryTests : IClassFixture<IntegrationFixture>
         var shoppingCart = ShoppingCart.Create(Guid.NewGuid());
         shoppingCart.AddItem(Guid.NewGuid());
 
-        var appendResult = await _integrationFixture.EventStoreRepository.Store<ShoppingCart, Guid>(
+        var appendResult = await _integrationFixture.EventSourcedRepository.Store<ShoppingCart, Guid>(
             shoppingCart,
             new ExpectedStreamVersion(shoppingCart.OriginalVersion),
             CancellationToken.None);

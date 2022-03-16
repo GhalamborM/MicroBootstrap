@@ -1,8 +1,9 @@
 using Marten;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Extensions.DependencyInjection;
 using MicroBootstrap.CQRS;
 using MicroBootstrap.Messaging;
+using MicroBootstrap.Messaging.Postgres.Extensions;
 using MicroBootstrap.Messaging.Transport.InMemory;
 using MicroBootstrap.Persistence.Marten.Extensions;
 using MicroBootstrap.Tests.Shared;

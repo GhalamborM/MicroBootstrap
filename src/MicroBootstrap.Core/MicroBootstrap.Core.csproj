@@ -1,5 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <PackageId>MicroBootstrap.Core</PackageId>
+    <Title>MicroBootstrap.Core</Title>
+    <PackageTags>MicroBootstrap;;ServiceBus</PackageTags>
+    <Description>
+	MicroBootstrap Core Functionality that will use by all MicroBootstrap packages; 
+	$(Description)
+	</Description>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\MicroBootstrap.Abstractions\MicroBootstrap.Abstractions.csproj" />
   </ItemGroup>

@@ -1,4 +1,3 @@
-<!-- https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build -->
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
@@ -6,6 +5,25 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>A Full Stack framework written in .NET Core to speed up your development process in microservices and modular monolith apps. It gathers most widely used frameworks in .NET world and pack them into a simple bootstrap package.</Description>
+    <IsPackable>True</IsPackable>
+    <PackageIconFullPath>$(MSBuildThisFileDirectory)logo.png</PackageIconFullPath>
+    <PackageProjectUrl>https://github.com/mehdihadeli/micro-bootstrap</PackageProjectUrl>
+    <PackageTags>'.net;c#;dotnet;dotnetcore;aspnetcore; distributed; distributed-application; application-framework; eventsourcing; event-sourcing; web-framework; modular-monolith;framework; webapi; ddd ;domain-driven-design;architecture;microservices;cqrs; rabbitmQ; microservices-framework; vertical-slice-architecture;</PackageTags>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+     <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+     <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>full</DebugType>

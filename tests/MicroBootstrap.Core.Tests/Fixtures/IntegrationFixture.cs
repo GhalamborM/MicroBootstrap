@@ -1,4 +1,4 @@
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Extensions.DependencyInjection;
 using MicroBootstrap.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +21,7 @@ public class IntegrationFixture: IAsyncLifetime
     }
 
     public IEventStore EventStore => _provider.GetRequiredService<IEventStore>();
-    public IEventStoreRepository EventStoreRepository => _provider.GetRequiredService<IEventStoreRepository>();
+    public IEventSourcedRepository EventSourcedRepository => _provider.GetRequiredService<IEventSourcedRepository>();
 
     public Task InitializeAsync()
     {

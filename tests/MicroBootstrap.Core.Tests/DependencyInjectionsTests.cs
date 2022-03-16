@@ -1,5 +1,5 @@
 using FluentAssertions;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Extensions.DependencyInjection;
 using MicroBootstrap.Core.Persistence.EventStore.InMemory;
 using MicroBootstrap.Tests.Shared;

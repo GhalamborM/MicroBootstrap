@@ -4,6 +4,7 @@ using MediatR;
 using MicroBootstrap.Abstractions.CQRS.Command;
 using MicroBootstrap.Abstractions.Messaging;
 using MicroBootstrap.Abstractions.Messaging.Serialization;
+using MicroBootstrap.Scheduling.Internal.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

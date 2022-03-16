@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MicroBootstrap.Scheduling.Internal;
+namespace MicroBootstrap.Scheduling.Internal.Data;
 
 public class InternalMessageEntityTypeConfiguration : IEntityTypeConfiguration<InternalMessage>
 {

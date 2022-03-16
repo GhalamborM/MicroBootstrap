@@ -17,6 +17,9 @@ public abstract class DbContextDesignFactoryBase<TDbContext> : IDesignTimeDbCont
 
     public TDbContext CreateDbContext(string[] args)
     {
+        Console.WriteLine($"BaseDirectory: {AppContext.BaseDirectory}");
+        Console.WriteLine($"ConnectionStringName: {_connectionStringName}");
+
         var connString = EfConfigurationHelper.GetConfiguration(AppContext.BaseDirectory)
             ?.GetConnectionString(_connectionStringName);
 

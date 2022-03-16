@@ -13,13 +13,28 @@ public static class Extensions
 {
     public static IServiceCollection AddInternalScheduler<TContext>(
         this IServiceCollection services,
-        IConfiguration configuration,
-        Assembly migrationAssembly)
+        IConfiguration configuration)
+        where TContext : EfDbContextBase
+    {
+        SddInternalMessagesContext<TContext>(services, configuration);
+
+        services.AddScoped<IScheduler, InternalScheduler>();
+        services.AddScoped<IMessageScheduler, InternalScheduler>();
+        services.AddScoped<ICommandScheduler, InternalScheduler>();
+        services.AddScoped<IInternalSchedulerService, InternalSchedulerService>();
+
+        services.AddHostedService<InternalMessageSchedulerBackgroundWorkerService>();
+
+        return services;
+    }
+
+    private static void SddInternalMessagesContext<TContext>(IServiceCollection services, IConfiguration configuration)
         where TContext : EfDbContextBase
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-        services.AddOptions<InternalMessageSchedulerOptions>().Bind(configuration.GetSection(nameof(InternalMessageSchedulerOptions)))
+        services.AddOptions<InternalMessageSchedulerOptions>()
+            .Bind(configuration.GetSection(nameof(InternalMessageSchedulerOptions)))
             .ValidateDataAnnotations();
 
         services.AddDbContext<TContext>(cfg =>
@@ -30,18 +45,9 @@ public static class Extensions
 
             cfg.UseNpgsql(options.ConnectionString, sqlOptions =>
             {
-                sqlOptions.MigrationsAssembly(migrationAssembly.GetName().Name);
+                sqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
                 sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             }).UseSnakeCaseNamingConvention();
         });
-
-        services.AddScoped<IScheduler, InternalScheduler>();
-        services.AddScoped<IMessageScheduler, InternalScheduler>();
-        services.AddScoped<ICommandScheduler, InternalScheduler>();
-        services.AddScoped<IInternalSchedulerService, InternalSchedulerService>();
-
-        services.AddHostedService<InternalMessageSchedulerBackgroundWorkerService>();
-
-        return services;
     }
 }

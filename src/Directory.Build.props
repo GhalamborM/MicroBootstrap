@@ -7,13 +7,16 @@
   </PropertyGroup>
   
   <PropertyGroup>
+    <Authors>mehdihadeli</Authors>
     <Product>micro-bootstrap</Product>
 	  <Copyright>Copyright 2021-2022 Mehdi Hadeli</Copyright>
     <PackageIcon>logo.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>A Full Stack framework written in .NET Core to speed up your development process in microservices and modular monolith apps. It gathers most widely used frameworks in .NET world and pack them into a simple bootstrap package.</Description>
     <IsPackable>True</IsPackable>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/mehdihadeli/micro-bootstrap</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mehdihadeli/micro-bootstrap</RepositoryUrl>
     <PackageTags>c#;dotnet;dotnetcore;aspnetcore; message-transport;message-queue ;message-bus;dotnet-core;distributed; distributed-application; application-framework; eventsourcing; event-sourcing; web-framework; modular-monolith;framework; webapi; ddd ;domain-driven-design;architecture;microservices;cqrs; rabbitmQ; microservices-framework; vertical-slice-architecture;</PackageTags>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

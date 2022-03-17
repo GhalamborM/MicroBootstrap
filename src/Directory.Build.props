@@ -17,6 +17,7 @@
     <PackageTags>'.net;c#;dotnet;dotnetcore;aspnetcore; distributed; distributed-application; application-framework; eventsourcing; event-sourcing; web-framework; modular-monolith;framework; webapi; ddd ;domain-driven-design;architecture;microservices;cqrs; rabbitmQ; microservices-framework; vertical-slice-architecture;</PackageTags>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<PackageOutputPath>../../packages/</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

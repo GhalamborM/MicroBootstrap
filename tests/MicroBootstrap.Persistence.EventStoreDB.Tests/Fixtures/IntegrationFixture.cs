@@ -1,4 +1,4 @@
-using MicroBootstrap.Abstractions.Persistence.EventStore;
+using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Persistence.EventStoreDB.Extensions;
 using MicroBootstrap.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;

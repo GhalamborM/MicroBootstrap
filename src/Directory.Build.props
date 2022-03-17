@@ -8,7 +8,7 @@
   
   <PropertyGroup>
     <Product>micro-bootstrap</Product>
-	<Copyright>Copyright 2021-2022 Mehdi Hadeli</Copyright>
+	  <Copyright>Copyright 2021-2022 Mehdi Hadeli</Copyright>
     <PackageIcon>logo.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>A Full Stack framework written in .NET Core to speed up your development process in microservices and modular monolith apps. It gathers most widely used frameworks in .NET world and pack them into a simple bootstrap package.</Description>
@@ -23,12 +23,12 @@
     <None Include="..\logo.png" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
   
-  <PropertyGroup>
+  <!-- <PropertyGroup>
      <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
      <None Include="README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>full</DebugType>

@@ -1,5 +1,5 @@
 using FluentAssertions;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Extensions.DependencyInjection;
 using MicroBootstrap.Core.Persistence.EventStore.InMemory;
 using MicroBootstrap.Tests.Shared;
@@ -27,5 +27,10 @@ public class DependencyInjectionsTests
     public void should_resolve_inmemory_event_store() {
         _provider.GetService<IEventStore>().Should().NotBeNull();
         _provider.GetService<IEventStore>().Should().BeOfType<InMemoryEventStore>();
+    }
+
+    [Fact]
+    public void should_resolve_aggregate_store() {
+        _provider.GetService<IAggregateStore>().Should().NotBeNull();
     }
 }

@@ -16,10 +16,10 @@ public abstract class EfRepositoryBase<TDbContext, TEntity, TKey> :
     where TDbContext : DbContext
 {
     protected readonly TDbContext DbContext;
-    private readonly IAggregatesDomainEventsStore _aggregatesDomainEventsStore;
+    private readonly IAggregatesDomainEventsRequestStore _aggregatesDomainEventsStore;
     protected readonly DbSet<TEntity> DbSet;
 
-    protected EfRepositoryBase(TDbContext dbContext, IAggregatesDomainEventsStore aggregatesDomainEventsStore)
+    protected EfRepositoryBase(TDbContext dbContext, IAggregatesDomainEventsRequestStore aggregatesDomainEventsStore)
     {
         DbContext = dbContext;
         _aggregatesDomainEventsStore = aggregatesDomainEventsStore;

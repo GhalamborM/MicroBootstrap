@@ -1,7 +1,7 @@
 using EventStore.Client;
 using Grpc.Core;
 using MicroBootstrap.Abstractions.Core.Domain.Events;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
+using MicroBootstrap.Abstractions.Persistence.EventStore.Projections;
 using MicroBootstrap.Core.Domain.Events;
 using MicroBootstrap.Core.Threading;
 using MicroBootstrap.Persistence.EventStoreDB.Extensions;

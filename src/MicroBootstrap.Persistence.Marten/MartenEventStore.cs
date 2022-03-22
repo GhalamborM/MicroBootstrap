@@ -1,10 +1,7 @@
 using System.Collections.Immutable;
 using Marten;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
-using MicroBootstrap.Core.Persistence.EventStore;
-using MicroBootstrap.Core.Persistence.EventStore.Extensions;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 
 namespace MicroBootstrap.Persistence.Marten;
 
@@ -116,6 +113,11 @@ public class MartenEventStore : IEventStore
             version: StreamReadPosition.Start.Value,
             null,
             token: cancellationToken);
+    }
+
+    public Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        return _documentSession.SaveChangesAsync(cancellationToken);
     }
 
     private IQueryable<global::Marten.Events.IEvent> Filter(string streamId, long? version, DateTime? timestamp)

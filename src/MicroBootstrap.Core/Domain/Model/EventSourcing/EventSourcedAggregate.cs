@@ -31,10 +31,15 @@ public class EventSourcedAggregate<TId> : Entity<TId>, IEventSourcedAggregate<TI
     /// </summary>
     /// <typeparam name="TDomainEvent">Type of domain event.</typeparam>
     /// <param name="domainEvent"></param>
-    protected virtual void ApplyEvent<TDomainEvent>(TDomainEvent domainEvent)
+    /// <param name="isNew"></param>
+    protected virtual void ApplyEvent<TDomainEvent>(TDomainEvent domainEvent, bool isNew = true)
         where TDomainEvent : IDomainEvent
     {
-        AddDomainEvent(domainEvent);
+        if (isNew)
+        {
+            AddDomainEvent(domainEvent);
+        }
+
         When(domainEvent);
         CurrentVersion++;
     }

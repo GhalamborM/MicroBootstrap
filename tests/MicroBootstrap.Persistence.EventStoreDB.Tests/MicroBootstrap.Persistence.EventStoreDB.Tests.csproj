@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MicroBootstrap.CQRS\MicroBootstrap.CQRS.csproj" />
+    <ProjectReference Include="..\..\src\MicroBootstrap.Messaging.InMemory\MicroBootstrap.Messaging.InMemory.csproj" />
+    <ProjectReference Include="..\..\src\MicroBootstrap.Messaging.Transport.InMemory\MicroBootstrap.Messaging.Transport.InMemory.csproj" />
     <ProjectReference Include="..\..\src\MicroBootstrap.Persistence.EventStoreDB\MicroBootstrap.Persistence.EventStoreDB.csproj" />
     <ProjectReference Include="..\MicroBootstrap.Tests.Shared\MicroBootstrap.Tests.Shared.csproj" />
   </ItemGroup>

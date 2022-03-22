@@ -1,8 +1,7 @@
 using System.Collections.Immutable;
 using EventStore.Client;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Persistence.EventStoreDB.Extensions;
 
 namespace MicroBootstrap.Persistence.EventStoreDB;
@@ -11,12 +10,10 @@ namespace MicroBootstrap.Persistence.EventStoreDB;
 public class EventStoreDbEventStore : IEventStore
 {
     private readonly EventStoreClient _grpcClient;
-    private readonly IDomainEventPublisher _domainEventPublisher;
 
-    public EventStoreDbEventStore(EventStoreClient grpcClient, IDomainEventPublisher domainEventPublisher)
+    public EventStoreDbEventStore(EventStoreClient grpcClient)
     {
         _grpcClient = grpcClient;
-        _domainEventPublisher = domainEventPublisher;
     }
 
     public async Task<bool> StreamExists(string streamId, CancellationToken cancellationToken = default)
@@ -174,5 +171,10 @@ public class EventStoreDbEventStore : IEventStore
             defaultAggregateState,
             fold,
             cancellationToken);
+    }
+
+    public Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
     }
 }

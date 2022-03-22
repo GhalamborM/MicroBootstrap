@@ -11,4 +11,5 @@ public class MartenOptions
     public string ReadModelSchema { get; set; } = DefaultSchema;
     public bool ShouldRecreateDatabase { get; set; } = false;
     public DaemonMode DaemonMode { get; set; } = DaemonMode.Disabled;
+    public bool UseMetadata { get; set; } = true;
 }

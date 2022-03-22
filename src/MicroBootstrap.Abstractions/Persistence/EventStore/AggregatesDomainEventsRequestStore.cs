@@ -2,9 +2,9 @@ using MicroBootstrap.Abstractions.Core.Domain.Events;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 using MicroBootstrap.Abstractions.Core.Domain.Model;
 
-namespace MicroBootstrap.Core.Domain.Events;
+namespace MicroBootstrap.Abstractions.Persistence.EventStore;
 
-public class AggregatesDomainEventsStore : IAggregatesDomainEventsRequestStore
+public class AggregatesDomainEventsRequestStore : IAggregatesDomainEventsRequestStore
 {
     private readonly List<IDomainEvent> _uncommittedDomainEvents = new();
 

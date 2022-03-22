@@ -9,7 +9,7 @@ public class EfRepository<TDbContext, TEntity, TKey> : EfRepositoryBase<TDbConte
     where TEntity : class, IHaveIdentity<TKey>
     where TDbContext : DbContext
 {
-    public EfRepository(TDbContext dbContext, IAggregatesDomainEventsStore aggregatesDomainEventsStore)
+    public EfRepository(TDbContext dbContext, IAggregatesDomainEventsRequestStore aggregatesDomainEventsStore)
         : base(dbContext, aggregatesDomainEventsStore)
     {
     }
@@ -19,7 +19,7 @@ public class EfRepository<TDbContext, TEntity> : EfRepository<TDbContext, TEntit
     where TEntity : class, IHaveIdentity<Guid>
     where TDbContext : DbContext
 {
-    public EfRepository(TDbContext dbContext, [NotNull] IAggregatesDomainEventsStore aggregatesDomainEventsStore)
+    public EfRepository(TDbContext dbContext, [NotNull] IAggregatesDomainEventsRequestStore aggregatesDomainEventsStore)
         : base(dbContext, aggregatesDomainEventsStore)
     {
     }

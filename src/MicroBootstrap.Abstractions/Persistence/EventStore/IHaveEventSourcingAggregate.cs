@@ -1,8 +1,8 @@
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
 using MicroBootstrap.Abstractions.Core.Domain.Model;
+using MicroBootstrap.Abstractions.Persistence.EventStore.Projections;
 
-namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+namespace MicroBootstrap.Abstractions.Persistence.EventStore;
 
 public interface IHaveEventSourcingAggregate : IHaveAggregateStateProjection, IHaveAggregate
 {

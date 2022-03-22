@@ -1,8 +1,11 @@
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 
-namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+namespace MicroBootstrap.Abstractions.Persistence.EventStore;
 
-public interface IEventStoreRepository
+/// <summary>
+/// This AggregateStore act like a repository for the AggregateRoot.
+/// </summary>
+public interface IAggregateStore
 {
     /// <summary>
     /// Load the aggregate from the store with a aggregate id
@@ -26,7 +29,7 @@ public interface IEventStoreRepository
     /// <param name="expectedVersion">Expected version saved from earlier. -1 if new.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>Task of operation.</returns>
-    Task<AppendResult> Store<TAggregate, TId>(
+    Task<AppendResult> StoreAsync<TAggregate, TId>(
         TAggregate aggregate,
         ExpectedStreamVersion? expectedVersion = null,
         CancellationToken cancellationToken = default)
@@ -40,7 +43,7 @@ public interface IEventStoreRepository
     /// <param name="aggregate">Aggregate object to be saved.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>Task of operation.</returns>
-    public Task Store<TAggregate, TId>(
+    Task<AppendResult> StoreAsync<TAggregate, TId>(
         TAggregate aggregate,
         CancellationToken cancellationToken = default)
         where TAggregate : class, IEventSourcedAggregate<TId>, new();

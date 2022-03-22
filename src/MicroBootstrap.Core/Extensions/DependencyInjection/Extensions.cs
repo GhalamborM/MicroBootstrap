@@ -3,11 +3,11 @@ using MicroBootstrap.Abstractions.Core;
 using MicroBootstrap.Abstractions.Core.Domain.Events;
 using MicroBootstrap.Abstractions.Core.Domain.Events.External;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
 using MicroBootstrap.Abstractions.Messaging;
 using MicroBootstrap.Abstractions.Messaging.Serialization;
 using MicroBootstrap.Abstractions.Messaging.Transport;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
+using MicroBootstrap.Abstractions.Persistence.EventStore.Projections;
 using MicroBootstrap.Abstractions.Types;
 using MicroBootstrap.Core.Domain.Events;
 using MicroBootstrap.Core.Extensions.Registration;
@@ -39,13 +39,12 @@ public static class Extensions
         services.AddScoped<IDomainEventPublisher, DomainEventPublisher>();
         services.AddScoped<IIntegrationEventPublisher, IntegrationEventPublisher>();
         services.AddScoped<IDomainNotificationEventPublisher, DomainNotificationEventPublisher>();
-        services.AddScoped<IAggregatesDomainEventsStore, AggregatesDomainEventsStore>();
 
         AddEventStore<InMemoryEventStore>(services, ServiceLifetime.Singleton);
 
         AddDefaultMessageSerializer(services, ServiceLifetime.Transient);
 
-        AddMessagingCore(services, configuration);
+        AddMessagingCore(services);
         switch (configuration["IdGenerator:Type"])
         {
             case "Guid":
@@ -61,9 +60,7 @@ public static class Extensions
         return services;
     }
 
-    public static IServiceCollection AddMessagingCore(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    private static IServiceCollection AddMessagingCore(this IServiceCollection services)
     {
         services.AddScoped<IMessageDispatcher, MessageDispatcher>();
         services.AddHostedService<SubscribersBackgroundService>();
@@ -132,7 +129,8 @@ public static class Extensions
         ServiceLifetime withLifetime = ServiceLifetime.Scoped)
         where TEventStore : class, IEventStore
     {
-        services.Add<IEventStoreRepository, EventStoreRepository>(withLifetime);
+        services.Add<IAggregatesDomainEventsRequestStore, AggregatesDomainEventsRequestStore>(withLifetime);
+        services.Add<IAggregateStore, AggregateStore>(withLifetime);
 
         return services.Add<TEventStore, TEventStore>(withLifetime)
             .Add<IEventStore>(sp => sp.GetRequiredService<TEventStore>(), withLifetime);

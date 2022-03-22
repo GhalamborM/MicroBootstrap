@@ -1,10 +1,15 @@
 using Marten;
-using Marten.Events;
+using Marten.Events.Daemon.Resiliency;
+using Marten.Events.Projections;
+using MicroBootstrap.Abstractions.Core;
 using MicroBootstrap.Abstractions.Core.Domain.Events;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Extensions.Configuration;
 using MicroBootstrap.Core.Extensions.DependencyInjection;
-using MicroBootstrap.Core.Threading;
+using MicroBootstrap.Core.Extensions.Registration;
+using MicroBootstrap.Persistence.Marten.Subscriptions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Weasel.Core;
 
 namespace MicroBootstrap.Persistence.Marten.Extensions;
@@ -14,16 +19,12 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddMarten(
         this IServiceCollection services,
         IConfiguration configuration,
-        Action<StoreOptions>? storeOptions = null,
-        Action<MartenOptions>? configureOptions = null)
+        ServiceLifetime lifetime = ServiceLifetime.Scoped,
+        Action<StoreOptions>? configureOptions = null
+    )
+
     {
         var martenOptions = configuration.GetOptions<MartenOptions>(nameof(MartenOptions));
-
-        var documentStore = services
-            .AddMarten(options => { SetStoreOptions(options, martenOptions, storeOptions); })
-            .InitializeStore();
-
-        SetupSchema(documentStore, martenOptions, 1);
 
         if (configureOptions is { })
         {
@@ -35,51 +36,55 @@ public static class ServiceCollectionExtensions
                 .ValidateDataAnnotations();
         }
 
-        services.AddScoped<IDomainEventsAccessor, MartenDomainEventAccessor>();
-        services.AddScoped<IMartenUnitOfWork, MartenUnitOfWork>();
-        services.AddEventStore<MartenEventStore>(ServiceLifetime.Scoped);
+        services
+            .AddScoped<IIdGenerator<Guid>, MartenIdGenerator>()
+            .AddMarten(sp => SetStoreOptions(sp, martenOptions, configureOptions))
+            .ApplyAllDatabaseChangesOnStartup()
+            .AddAsyncDaemon(DaemonMode.Solo);
+
+        services.Add<IAggregateStore, MartenAggregateStore>(lifetime);
+        services.Add<IDomainEventsAccessor, MartenDomainEventAccessor>(lifetime);
+        services.AddEventStore<MartenEventStore>(lifetime);
 
         return services;
     }
 
-    private static void SetupSchema(IDocumentStore documentStore, MartenOptions martenOptions, int retryLeft = 1)
-    {
-        try
-        {
-            if (martenOptions.ShouldRecreateDatabase)
-                documentStore.Advanced.Clean.CompletelyRemoveAll();
-
-            using (NoSynchronizationContextScope.Enter())
-            {
-                documentStore.Storage.ApplyAllConfiguredChangesToDatabaseAsync().Wait();
-            }
-        }
-        catch
-        {
-            if (retryLeft == 0) throw;
-
-            Thread.Sleep(1000);
-            SetupSchema(documentStore, martenOptions, --retryLeft);
-        }
-    }
-
-    private static void SetStoreOptions(
-        StoreOptions options,
+    private static StoreOptions SetStoreOptions(
+        IServiceProvider serviceProvider,
         MartenOptions martenOptions,
-        Action<StoreOptions>? configureOptions = null)
+        Action<StoreOptions>? configureOptions = null
+    )
     {
+        var options = new StoreOptions();
         options.Connection(martenOptions.ConnectionString);
         options.AutoCreateSchemaObjects = AutoCreate.CreateOrUpdate;
 
         var schemaName = Environment.GetEnvironmentVariable("SchemaName");
         options.Events.DatabaseSchemaName = schemaName ?? martenOptions.WriteModelSchema;
         options.DatabaseSchemaName = schemaName ?? martenOptions.ReadModelSchema;
-        options.Events.StreamIdentity = StreamIdentity.AsString;
 
         options.UseDefaultSerialization(
-            nonPublicMembersStorage: NonPublicMembersStorage.NonPublicSetters,
-            enumStorage: EnumStorage.AsString);
+            EnumStorage.AsString,
+            nonPublicMembersStorage: NonPublicMembersStorage.All
+        );
+
+        options.Projections.Add(
+            new MartenSubscription(
+                new[] { new MartenEventPublisher(serviceProvider) },
+                serviceProvider.GetRequiredService<ILogger<MartenSubscription>>()
+            ),
+            ProjectionLifecycle.Async,
+            "MartenSubscription"
+        );
+
+        if (martenOptions.UseMetadata)
+        {
+            options.Events.MetadataConfig.CausationIdEnabled = true;
+            options.Events.MetadataConfig.CorrelationIdEnabled = true;
+        }
 
         configureOptions?.Invoke(options);
+
+        return options;
     }
 }

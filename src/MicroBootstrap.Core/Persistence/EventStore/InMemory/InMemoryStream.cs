@@ -1,4 +1,4 @@
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 
 namespace MicroBootstrap.Core.Persistence.EventStore.InMemory;
 
@@ -32,10 +32,11 @@ public class InMemoryStream
         foreach (var @event in events)
         {
             var version = ++Version;
+            @event.StreamId = StreamName;
             @event.Name = $"{version}@{StreamName}";
-            @event.CreatedTime = DateTime.Now;
+            @event.Timestamp = DateTime.Now;
             @event.EventNumber = version;
-            @event.EventPosition = globalAllPosition + 1;
+            @event.GlobalEventPosition = globalAllPosition + 1;
         }
 
         _events.AddRange(events);
@@ -44,7 +45,7 @@ public class InMemoryStream
     public IEnumerable<StreamEventData> GetEvents(StreamReadPosition from, int count)
     {
         var selected = _events
-            .SkipWhile(x => x.EventPosition < from.Value);
+            .SkipWhile(x => x.GlobalEventPosition < from.Value);
 
         if (count > 0) selected = selected.Take(count);
 

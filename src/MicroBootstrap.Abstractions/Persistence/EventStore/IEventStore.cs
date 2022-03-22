@@ -1,6 +1,6 @@
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
 
-namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+namespace MicroBootstrap.Abstractions.Persistence.EventStore;
 
 public interface IEventStore
 {
@@ -113,4 +113,11 @@ public interface IEventStore
         Action<object> fold,
         CancellationToken cancellationToken = default)
         where TAggregate : class, IEventSourcedAggregate<TId>, new();
+
+    /// <summary>
+    /// Commit events to the event store.
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task CommitAsync(CancellationToken cancellationToken = default);
 }

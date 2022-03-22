@@ -1,5 +1,5 @@
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
 using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Persistence.EventStore.Extensions;
 
 namespace MicroBootstrap.Core.Persistence.EventStore.InMemory;
@@ -73,7 +73,7 @@ public class InMemoryEventStore : IEventStore
         );
     }
 
-    public async Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
+    public Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
         string streamId,
         StreamReadPosition fromVersion,
         TAggregate defaultAggregateState,
@@ -93,7 +93,7 @@ public class InMemoryEventStore : IEventStore
             }
         );
 
-        return result;
+        return Task.FromResult(result);
     }
 
     public Task<TAggregate?> AggregateStreamAsync<TAggregate, TId>(
@@ -109,6 +109,11 @@ public class InMemoryEventStore : IEventStore
             defaultAggregateState,
             fold,
             cancellationToken);
+    }
+
+    public Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
     }
 
     private InMemoryStream FindStream(string stream)

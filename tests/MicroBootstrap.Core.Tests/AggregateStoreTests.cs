@@ -1,6 +1,5 @@
-using System.Collections.Immutable;
 using FluentAssertions;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Domain.Events.Internal;
 using MicroBootstrap.Core.Domain.Model.EventSourcing;
 using MicroBootstrap.Core.Tests.Fixtures;
@@ -8,11 +7,11 @@ using Xunit;
 
 namespace MicroBootstrap.Core.Tests;
 
-public class EventStoreRepositoryTests : IClassFixture<IntegrationFixture>
+public class AggregateStoreTests : IClassFixture<IntegrationFixture>
 {
     private readonly IntegrationFixture _integrationFixture;
 
-    public EventStoreRepositoryTests(IntegrationFixture fixture)
+    public AggregateStoreTests(IntegrationFixture fixture)
     {
         _integrationFixture = fixture;
     }
@@ -22,7 +21,7 @@ public class EventStoreRepositoryTests : IClassFixture<IntegrationFixture>
     {
         var shoppingCart = await AddInitItemToStore();
 
-        var exists = await _integrationFixture.EventSourcedRepository.Exists<ShoppingCart,Guid>(shoppingCart.Id);
+        var exists = await _integrationFixture.AggregateStore.Exists<ShoppingCart, Guid>(shoppingCart.Id);
 
         exists.Should().BeTrue();
     }
@@ -33,12 +32,13 @@ public class EventStoreRepositoryTests : IClassFixture<IntegrationFixture>
         var shoppingCart = ShoppingCart.Create(Guid.NewGuid());
         shoppingCart.AddItem(Guid.NewGuid());
 
-        var appendResult = await _integrationFixture.EventSourcedRepository.Store<ShoppingCart, Guid>(
+        var appendResult = await _integrationFixture.AggregateStore.StoreAsync<ShoppingCart, Guid>(
             shoppingCart,
             new ExpectedStreamVersion(shoppingCart.OriginalVersion),
             CancellationToken.None);
 
-        var fetchedItem = await _integrationFixture.EventSourcedRepository.GetAsync<ShoppingCart, Guid>(shoppingCart.Id);
+        var fetchedItem =
+            await _integrationFixture.AggregateStore.GetAsync<ShoppingCart, Guid>(shoppingCart.Id);
 
         appendResult.Should().NotBeNull();
         appendResult.NextExpectedVersion.Should().Be(1);
@@ -54,7 +54,7 @@ public class EventStoreRepositoryTests : IClassFixture<IntegrationFixture>
         var shoppingCart = ShoppingCart.Create(Guid.NewGuid());
         shoppingCart.AddItem(Guid.NewGuid());
 
-        var appendResult = await _integrationFixture.EventSourcedRepository.Store<ShoppingCart, Guid>(
+        var appendResult = await _integrationFixture.AggregateStore.StoreAsync<ShoppingCart, Guid>(
             shoppingCart,
             new ExpectedStreamVersion(shoppingCart.OriginalVersion),
             CancellationToken.None);

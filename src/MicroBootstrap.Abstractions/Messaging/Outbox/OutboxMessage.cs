@@ -57,7 +57,7 @@ public class OutboxMessage
         string name,
         string data,
         EventType eventType,
-        string correlationId = null)
+        string? correlationId = null)
     {
         OccurredOn = occurredOn;
         Type = type;

@@ -1,4 +1,4 @@
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 
 namespace MicroBootstrap.Core.Persistence.EventStore;
 

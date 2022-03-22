@@ -1,7 +1,7 @@
 using System.Text;
 using EventStore.Client;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Domain.Events;
 using MicroBootstrap.Core.Persistence.EventStore;
 using Newtonsoft.Json;

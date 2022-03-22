@@ -1,5 +1,5 @@
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+using MicroBootstrap.Abstractions.Persistence.EventStore;
 using MicroBootstrap.Core.Extensions.Utils.Reflections;
 
 namespace MicroBootstrap.Core.Persistence.EventStore.Extensions;

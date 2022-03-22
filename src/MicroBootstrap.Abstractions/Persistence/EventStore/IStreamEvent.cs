@@ -1,6 +1,7 @@
+using MicroBootstrap.Abstractions.Core.Domain.Events;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 
-namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store;
+namespace MicroBootstrap.Abstractions.Persistence.EventStore;
 
 public interface IStreamEvent : IEvent
 {

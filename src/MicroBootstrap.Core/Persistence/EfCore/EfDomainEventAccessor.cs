@@ -6,11 +6,11 @@ namespace MicroBootstrap.Core.Persistence.EfCore;
 public class EfDomainEventAccessor : IDomainEventsAccessor
 {
     private readonly IDomainEventContext _domainEventContext;
-    private readonly IAggregatesDomainEventsStore _aggregatesDomainEventsStore;
+    private readonly IAggregatesDomainEventsRequestStore _aggregatesDomainEventsStore;
 
     public EfDomainEventAccessor(
         IDomainEventContext domainEventContext,
-        IAggregatesDomainEventsStore aggregatesDomainEventsStore)
+        IAggregatesDomainEventsRequestStore aggregatesDomainEventsStore)
     {
         _domainEventContext = domainEventContext;
         _aggregatesDomainEventsStore = aggregatesDomainEventsStore;

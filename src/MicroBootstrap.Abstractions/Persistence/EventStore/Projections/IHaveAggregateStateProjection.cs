@@ -1,6 +1,4 @@
-﻿using MicroBootstrap.Abstractions.Core.Domain.Model.EventSourcing;
-
-namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
+﻿namespace MicroBootstrap.Abstractions.Persistence.EventStore.Projections;
 
 public interface IHaveAggregateStateProjection
 {

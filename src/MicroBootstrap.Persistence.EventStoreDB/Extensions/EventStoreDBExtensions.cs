@@ -1,6 +1,6 @@
 using EventStore.Client;
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
-using MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
+using MicroBootstrap.Abstractions.Persistence.EventStore.Projections;
 using MicroBootstrap.Core.Domain.Events;
 
 namespace MicroBootstrap.Persistence.EventStoreDB.Extensions;

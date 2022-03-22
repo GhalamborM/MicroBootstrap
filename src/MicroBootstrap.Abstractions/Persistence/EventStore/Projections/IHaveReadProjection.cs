@@ -1,6 +1,6 @@
 using MicroBootstrap.Abstractions.Core.Domain.Events.Internal;
 
-namespace MicroBootstrap.Abstractions.Core.Domain.Events.Store.Projections;
+namespace MicroBootstrap.Abstractions.Persistence.EventStore.Projections;
 
 public interface IHaveReadProjection
 {

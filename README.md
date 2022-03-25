@@ -4,7 +4,7 @@
 
 ## Installation
 
-MicroBootstrap is split into multiple nuget packages available on nuget.org.
+MicroBootstrap is seperated into multiple nuget packages available on nuget.org.
 
 | Packages | Stats |
 :--- | :---
@@ -35,13 +35,8 @@ MicroBootstrap.Swagger| [![NuGet](https://buildstats.info/nuget/MicroBootstrap.S
 MicroBootstrap.Tracing| [![NuGet](https://buildstats.info/nuget/MicroBootstrap.Tracing?includePreReleases=true)](https://www.nuget.org/packages/MicroBootstrap.Tracing)
 MicroBootstrap.Validation| [![NuGet](https://buildstats.info/nuget/MicroBootstrap.Validation?includePreReleases=true)](https://www.nuget.org/packages/MicroBootstrap.Validation)
 
-
-
-
-
 ## Give a Star! ⭐️
 If you like or are using this repository to learn or start your solution, please give it a star. Thanks!
-
 
 ## 🤝 Contributing
 ----------------

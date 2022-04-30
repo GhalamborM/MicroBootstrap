@@ -1,7 +1,0 @@
-docker build --tag game-messaging-service:local -f ./Dockerfile.multistage .
-
----------------------------------------------------
-dotnet publish src/Game.Services.Messaging.API -c Release -o src/Game.Services.Messaging.API/bin/Docker
-docker build --tag game-messaging-service:local -f ./Dockerfile .
---------------------------------------------------
-docker run --network=game-network -p 7002:7002 --name=game-messaging-service game-messaging-service:local 

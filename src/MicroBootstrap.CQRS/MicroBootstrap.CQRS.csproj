@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicroBootstrap.Abstractions\MicroBootstrap.Abstractions.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Core\MicroBootstrap.Core.csproj" />
+  </ItemGroup>
+
+</Project>

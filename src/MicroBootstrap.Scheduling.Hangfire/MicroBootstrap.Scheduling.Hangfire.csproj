@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicroBootstrap.Abstractions\MicroBootstrap.Abstractions.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Core\MicroBootstrap.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire" Version="1.7.28" />
+    <PackageReference Include="Hangfire.InMemory" Version="0.3.4" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.9.6" />
+  </ItemGroup>
+
+</Project>

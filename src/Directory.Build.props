@@ -1,0 +1,115 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Authors>mehdihadeli</Authors>
+    <Product>micro-bootstrap</Product>
+	  <Copyright>Copyright 2021-2022 Mehdi Hadeli</Copyright>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>A Full Stack framework written in .NET Core to speed up your development process in microservices and modular monolith apps. It gathers most widely used frameworks in .NET world and pack them into a simple bootstrap package.</Description>
+    <IsPackable>True</IsPackable>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/mehdihadeli/micro-bootstrap</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mehdihadeli/micro-bootstrap</RepositoryUrl>
+    <PackageTags>c#;dotnet;dotnetcore;aspnetcore; message-transport;message-queue ;message-bus;dotnet-core;distributed; distributed-application; application-framework; eventsourcing; event-sourcing; web-framework; modular-monolith;framework; webapi; ddd ;domain-driven-design;architecture;microservices;cqrs; rabbitmQ; microservices-framework; vertical-slice-architecture;</PackageTags>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<PackageOutputPath>../../packages/</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\logo.png" Pack="true" Visible="false" PackagePath=""/>
+  </ItemGroup>
+  
+  <!-- <PropertyGroup>
+     <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+     <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup> -->
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>full</DebugType>
+    <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <Optimize>true</Optimize>
+    <DebugType>embedded</DebugType>
+    <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Meziantou.Analyzer" Version="1.0.688" Condition="$(MSBuildProjectExtension) == '.csproj'" PrivateAssets="all">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference
+      Include="StyleCop.Analyzers"
+      Version="1.2.0-beta.354"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+	<PackageReference
+      Include="SonarAnalyzer.CSharp"
+      Version="8.29.0.36737"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+
+   <PackageReference
+      Include="Roslynator.Analyzers"
+      Version="3.3.0"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+	<PackageReference
+      Include="Roslynator.CodeAnalysis.Analyzers"
+      Version="3.3.0"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+	<PackageReference
+      Include="Roslynator.Formatting.Analyzers"
+      Version="3.3.0"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+   <PackageReference
+      Include="Microsoft.VisualStudio.Threading.Analyzers"
+      Version="17.0.64"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+   <PackageReference
+      Include="AsyncFixer"
+      Version="1.5.1"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+<ItemGroup>
+    <Using Include="System.Linq" />
+    <Using Include="System" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+</ItemGroup>
+</Project>

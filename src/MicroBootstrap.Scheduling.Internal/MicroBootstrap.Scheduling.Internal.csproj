@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicroBootstrap.Abstractions\MicroBootstrap.Abstractions.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Core\MicroBootstrap.Core.csproj" />
+    <ProjectReference Include="..\MicroBootstrap.Persistence.EfCore.Postgres\MicroBootstrap.Persistence.EfCore.Postgres.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
